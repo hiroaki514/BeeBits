@@ -14,6 +14,13 @@
 /tmp/*
 !/tmp/.keep
 
+# Ignore cache files
+cache/
+
+# Ignore other temporary files
+*.tmp
+*.log
+
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/
