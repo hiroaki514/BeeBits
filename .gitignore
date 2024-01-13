@@ -33,4 +33,7 @@
 /bin/rails
 /bin/rake
 /bin/setup
-coverage
+/coverage
+
+# Ignore development.log unlink error
+/log/development.log
