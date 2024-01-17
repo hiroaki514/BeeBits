@@ -18,5 +18,10 @@ module BeeBits
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Add the following lines to set Rspec as the default test framework
+    config.generators do |g|
+      g.test_framework :rspec
+    end
   end
 end
