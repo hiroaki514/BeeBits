@@ -66,3 +66,4 @@ group :test do
 end
 
 gem 'seed-fu'
+gem 'bootstrap', '~> 5.3.1'
