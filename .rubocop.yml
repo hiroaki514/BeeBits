@@ -1,0 +1,49 @@
+# .rubocop.yml
+
+# Enable additional performance and Rails cops
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+# Exclude migration files from certain cops
+AllCops:
+  Exclude:
+    - 'db/migrate/*_devise_*.rb'
+
+# Disable certain cops
+Style/AsciiComments:
+  Enabled: false
+
+Layout/EndOfLine:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Rails/NotNullColumn:
+  Enabled: false
+  Include:
+    - db/migrate/*.rb
+
+Rails/FilePath:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/*.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - db/schema.rb
+    - "spec/**/*"
+    - config/routes.rb
+
+Rails/CreateTableWithTimestamps:
+  Enabled: false
