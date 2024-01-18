@@ -66,4 +66,6 @@ group :test do
 end
 
 gem 'seed-fu'
+gem 'devise'
+gem 'devise-i18n'
 gem 'bootstrap', '~> 5.3.1'
