@@ -268,6 +268,14 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rails (2.23.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -345,21 +353,17 @@ DEPENDENCIES
   bootstrap (~> 5.3.1)
   capybara
   debug
-<<<<<<< HEAD
   factory_bot_rails
-=======
   devise
-<<<<<<< HEAD
->>>>>>> cf5f7ca ([gem]deviceの追加と設定)
-=======
   devise-i18n
->>>>>>> 373f3f2 ([gem]devise-i18nの追加)
   importmap-rails
   jbuilder
   puma (~> 6.4)
   rails (~> 7.1.2)
   rspec-rails (~> 6.0.0)
   rubocop
+  rubocop-performance
+  rubocop-rails
   sassc-rails
   seed-fu
   selenium-webdriver

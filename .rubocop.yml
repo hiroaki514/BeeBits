@@ -38,6 +38,7 @@ Metrics/AbcSize:
 Metrics/MethodLength:
   Exclude:
     - db/migrate/*.rb
+    - 'bin/bundle'
 
 Metrics/BlockLength:
   Exclude:
@@ -47,3 +48,14 @@ Metrics/BlockLength:
 
 Rails/CreateTableWithTimestamps:
   Enabled: false
+
+# Enable new cops
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: true
+
+Gemspec/DevelopmentDependencies:
+  Enabled: true
+
+# Enable new cops by default
+AllCops:
+  NewCops: enable
