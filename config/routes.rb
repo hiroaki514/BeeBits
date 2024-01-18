@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   get 'home/index'
 
   # Add Devise routes for user authentication
-  # devise_for :users
+  devise_for :users
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
