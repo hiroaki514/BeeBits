@@ -7,7 +7,6 @@ ruby '3.2.2'
 
 gem "rails", "~> 7.1.2"
 gem "sprockets-rails"
-gem "sqlite3", "~> 1.4"
 gem "puma", "~> 6.4"
 gem "importmap-rails"
 gem "turbo-rails"
@@ -20,6 +19,7 @@ gem 'devise'
 gem 'devise-i18n'
 gem 'bootstrap', '~> 5.3.1'
 gem 'seed-fu'
+gem 'mysql2', '~> 0.5'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.2'
