@@ -1,0 +1,39 @@
+<!-- app/views/users/new.html.erb -->
+
+<h1>New User</h1>
+
+<%= form_with(model: @user, local: true) do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :phone_number %>
+    <%= form.text_field :phone_number %>
+  </div>
+
+  <div>
+    <%= form.label :email %>
+    <%= form.email_field :email %>
+  </div>
+
+  <div>
+    <%= form.label :birthdate %>
+    <%= form.date_field :birthdate %>
+  </div>
+
+  <div>
+    <%= form.label :password %>
+    <%= form.password_field :password %>
+  </div>
+
+  <div>
+    <%= form.label :BeeBits_id %>
+    <%= form.text_field :BeeBits_id %>
+  </div>
+
+  <div>
+    <%= form.submit "Create User" %>
+  </div>
+<% end %>
