@@ -3,8 +3,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  before_validation :configure_permitted_parameters, if: :devise_controller?
-
   protected
 
   def configure_permitted_parameters
