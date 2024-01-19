@@ -161,3 +161,14 @@ Processing by HomeController#index as HTML
 Completed 200 OK in 11369ms (Views: 9592.7ms | ActiveRecord: 0.0ms | Allocations: 214699)
 
 
+Started GET "/" for 172.28.0.1 at 2024-01-18 16:22:45 +0000
+Cannot render console from 172.28.0.1! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+  [1m[36mActiveRecord::SchemaMigration Load (3.4ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering home/index.html.erb within layouts/application
+  Rendered home/index.html.erb within layouts/application (Duration: 5.4ms | Allocations: 184)
+  Rendered layout layouts/application.html.erb (Duration: 4200.4ms | Allocations: 46531)
+Completed 200 OK in 5996ms (Views: 4303.1ms | ActiveRecord: 0.0ms | Allocations: 118991)
+
+
