@@ -4,6 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+=begin
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone_number, format: { with: /\A(?:\+81|0)\d{9,10}\z/, message: "は日本の携帯電話番号の形式で入力してください" }, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: "は有効なメールアドレスの形式で入力してください" }
@@ -12,7 +13,7 @@ class User < ApplicationRecord
   validates :BeeBits_id, presence: true, uniqueness: true, 
                          format: { with: /\A@[\w]+\z/, message: "は@で始まり、英数字とアンダーバー(_)のみが使用できます" },
                          length: { maximum: 15 }
-
+=end
 
   private
 
