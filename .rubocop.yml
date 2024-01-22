@@ -9,6 +9,8 @@ require:
 AllCops:
   Exclude:
     - 'db/migrate/*_devise_*.rb'
+    - 'config/initializers/devise.rb' # Add this line to exclude devise.rb
+  NewCops: enable
 
 # Disable certain cops
 Style/AsciiComments:
@@ -55,7 +57,3 @@ Gemspec/DeprecatedAttributeAssignment:
 
 Gemspec/DevelopmentDependencies:
   Enabled: true
-
-# Enable new cops by default
-AllCops:
-  NewCops: enable
