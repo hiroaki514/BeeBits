@@ -7,21 +7,21 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone_number, :birthdate, :password, :BeeBits_id])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name phone_number birthdate password BeeBits_id])
   end
 
   # ログイン後のリダイレクト先を設定
-  def after_sign_in_path_for(resource)
+  def after_sign_in_path_for(_resource)
     root_path # ログイン後のリダイレクト先を適宜変更
   end
 
   # ユーザー登録後のリダイレクト先を設定
-  def after_sign_up_path_for(resource)
+  def after_sign_up_path_for(_resource)
     new_user_session_path
   end
 
   # ログアウト後のリダイレクト先を設定
-  def after_sign_out_path_for(resource_or_scope)
+  def after_sign_out_path_for(_resource_or_scope)
     new_user_session_path # ログアウト後のリダイレクト先をログイン画面に変更
   end
 end
