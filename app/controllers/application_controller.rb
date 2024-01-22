@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   # ログイン後のリダイレクト先を設定
   def after_sign_in_path_for(_resource)
-    root_path # ログイン後のリダイレクト先を適宜変更
+    root_path
   end
 
   # ユーザー登録後のリダイレクト先を設定
@@ -22,6 +22,6 @@ class ApplicationController < ActionController::Base
 
   # ログアウト後のリダイレクト先を設定
   def after_sign_out_path_for(_resource_or_scope)
-    new_user_session_path # ログアウト後のリダイレクト先をログイン画面に変更
+    new_user_session_path
   end
 end
