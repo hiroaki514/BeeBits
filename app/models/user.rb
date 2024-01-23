@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
 =begin
+  ※ 以下にログインとアカウント作成のバリデーションを記載しコメントアウト中
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone_number, format: { with: /\A(?:\+81|0)\d{9,10}\z/, message: "は日本の携帯電話番号の形式で入力してください" }, allow_blank: true
   validates :email, presence: true, uniqueness: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: "は有効なメールアドレスの形式で入力してください" }
