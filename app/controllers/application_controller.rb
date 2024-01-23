@@ -24,4 +24,7 @@ class ApplicationController < ActionController::Base
   def after_sign_out_path_for(_resource_or_scope)
     new_user_session_path
   end
+
+  # 認証不要のアクションやメソッドがある場合は以下に記述
+  def method_that_does_not_require_authentication; end
 end

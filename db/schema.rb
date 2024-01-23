@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.1].define(version: 20_240_118_150_143) do
     t.string 'phone_number'
     t.date 'birthdate'
     t.string 'BeeBits_id'
+    t.index ['BeeBits_id'], name: 'index_users_on_BeeBits_id', unique: true
     t.index ['email'], name: 'index_users_on_email', unique: true
     t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
   end

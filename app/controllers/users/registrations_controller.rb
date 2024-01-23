@@ -2,8 +2,6 @@
 
 module Users
   class RegistrationsController < Devise::RegistrationsController
-
-    
     private
 
     # Strong Parametersの設定

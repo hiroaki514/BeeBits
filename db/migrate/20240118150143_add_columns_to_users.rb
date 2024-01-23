@@ -2,9 +2,13 @@
 
 class AddColumnsToUsers < ActiveRecord::Migration[7.1]
   def change
-    add_column :users, :name, :string
-    add_column :users, :phone_number, :string
-    add_column :users, :birthdate, :date
-    add_column :users, :BeeBits_id, :string
+    change_table :users, bulk: true do |t|
+      t.string :name
+      t.string :phone_number
+      t.date :birthdate
+      t.string :BeeBits_id
+    end
+
+    add_index :users, :BeeBits_id, unique: true
   end
 end
