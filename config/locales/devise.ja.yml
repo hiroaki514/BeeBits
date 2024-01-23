@@ -30,6 +30,8 @@ ja:
         unconfirmed_email: 未確認メールアドレス
         unlock_token: ロック解除用トークン
         updated_at: 更新日
+      email:
+        blank: "は有効なメールアドレスの形式で入力してください"
     models:
       user: ユーザー
   devise:
