@@ -31,7 +31,7 @@
   <div class="field">
     <%= f.label :password, t('activerecord.attributes.user.password') %>
     <% if @minimum_password_length %>
-      <em>※<%= @minimum_password_length %>文字以上の英数字組み合わせ</em><br>
+      <em>※<%= @minimum_password_length %>文字以上</em><br>
     <% end %>
     <%= f.password_field :password, autocomplete: "new-password" %>
   </div>
