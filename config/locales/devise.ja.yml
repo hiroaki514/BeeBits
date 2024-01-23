@@ -149,11 +149,20 @@ ja:
   errors:
     messages:
       blank: "を入力してください"
-      already_confirmed: は既に登録済みです。ログインしてください。
-      confirmation_period_expired: の期限が切れました。%{period} までに確認する必要があります。 新しくリクエストしてください。
-      expired: の有効期限が切れました。新しくリクエストしてください。
-      not_found: は見つかりませんでした。
-      not_locked: はロックされていません。
+      already_confirmed: "は既に登録済みです。ログインしてください。"
+      confirmation_period_expired: "の期限が切れました。%{period} までに確認する必要があります。新しくリクエストしてください。"
+      expired: "の有効期限が切れました。新しくリクエストしてください。"
+      not_found: "は見つかりませんでした。"
+      not_locked: "はロックされていません。"
       not_saved:
-        one: エラーが発生したため %{resource} は保存されませんでした。
+        one: "エラーが発生したため %{resource} は保存されませんでした。"
         other: "%{count} 件のエラーが発生したため %{resource} は保存されませんでした。"
+      password:
+        too_short: "は%{count}文字以上で入力してください"
+    models:
+      user:
+        too_long: "は%{count}文字以内で入力してください"
+    attributes:
+      user:
+        name:
+          too_long: "は%{count}文字以内で入力してください"
