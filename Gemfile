@@ -15,7 +15,6 @@ gem 'mysql2', '~> 0.5'
 gem 'puma', '~> 6.4'
 gem 'rails', '~> 7.1.3'
 gem 'sassc-rails'
-gem 'seed-fu'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'turbo-rails'
@@ -29,6 +28,8 @@ group :development, :test do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'web-console'
+  gem 'seed-fu'
+
 end
 
 group :test do
