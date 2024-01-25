@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :authenticate_user!, except: [:method_that_does_not_require_authentication]
+  before_action :authenticate_user!
 
   protected
 
@@ -24,7 +24,4 @@ class ApplicationController < ActionController::Base
   def after_sign_out_path_for(_resource_or_scope)
     new_user_session_path
   end
-
-  # 認証不要のアクションやメソッドがある場合は以下に記述
-  def method_that_does_not_require_authentication; end
 end
