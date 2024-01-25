@@ -1,5 +1,13 @@
 ja:
   activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              too_short: "は%{count}文字以上で入力してください"
+            name:
+              too_long: "は%{count}文字以内で入力してください"
     attributes:
       user:
         name: "名前"
@@ -157,12 +165,3 @@ ja:
       not_saved:
         one: "エラーが発生したため %{resource} は保存されませんでした。"
         other: "%{count} 件のエラーが発生したため %{resource} は保存されませんでした。"
-      password:
-        too_short: "は%{count}文字以上で入力してください"
-    models:
-      user:
-        too_long: "は%{count}文字以内で入力してください"
-    attributes:
-      user:
-        name:
-          too_long: "は%{count}文字以内で入力してください"

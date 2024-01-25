@@ -19,11 +19,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_150143) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
-    t.string "phone_number"
-    t.date "birthdate"
-    t.string "beebits_id"
-    t.index ["beebits_id"], name: "index_users_on_BeeBits_id", unique: true
+    t.string "name", default: "", null: false, comment: "氏名"
+    t.string "phone_number", comment: "電話番号"
+    t.date "birthdate", null: false, comment: "生年月日"
+    t.string "beebits_name", default: "", null: false, comment: "ログインID"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
