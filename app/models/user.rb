@@ -15,8 +15,8 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 },
                        format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/, message: 'は英数字の組み合わせで8文字以上で入力してください' }
   validates :beebits_name, presence: true, uniqueness: { case_sensitive: true, on: :create },
-                         format: { with: /\A@[\w]+\z/, message: 'は@で始まり、英数字とアンダーバー(_)のみが使用できます' },
-                         length: { maximum: 15 }
+                           format: { with: /\A@[\w]+\z/, message: 'は@で始まり、英数字とアンダーバー(_)のみが使用できます' },
+                           length: { maximum: 15 }
 
   private
 
