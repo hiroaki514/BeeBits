@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name phone_number birthdate password BeeBits_id])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name phone_number birthdate password beebits_name])
   end
 
   # ログイン後のリダイレクト先を設定

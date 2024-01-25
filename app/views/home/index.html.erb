@@ -3,6 +3,6 @@
 
 <% if user_signed_in? %>
   <p>Welcome, <%= current_user.name %>!</p>
-  <p>あなたのID名は <%= current_user.BeeBits_id %></p>
+  <p>あなたのID名は <%= current_user.beebits_name %></p>
 <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
 <% end %>

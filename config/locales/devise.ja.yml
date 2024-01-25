@@ -6,7 +6,7 @@ ja:
         email: "メールアドレス"
         phone_number: "電話番号"
         birthdate: "生年月日"
-        BeeBits_id: "ユーザーID名"
+        beebits_name: "ユーザーID名"
         confirmation_sent_at: パスワード確認送信時刻
         confirmation_token: パスワード確認用トークン
         confirmed_at: パスワード確認時刻
@@ -37,7 +37,7 @@ ja:
         too_short: "は英数字の組み合わせで8文字以上で入力してください"
       name:
         blank: "を入力してください"
-      BeeBits_id:
+      beebits_name:
         blank: "を入力してください"
         format: "は@で始まり、英数字とアンダーバー(_)のみが使用できます"
     models:

@@ -50,7 +50,7 @@ Devise.setup do |config|
   # or not authentication should be aborted when the value is not present.
 
   #ユーザーを認証する際に使用されるキーを指定
-  config.authentication_keys = [:BeeBits_id]
+  config.authentication_keys = [:beebits_name]
 
   # Configure parameters from the request object used for authentication. Each entry
   # given should be a request method and it will automatically be passed to the
@@ -64,14 +64,14 @@ Devise.setup do |config|
   # to authenticate or find a user. Default is :email.
 
   # 指定されたキーが大文字小文字を区別せずに同一として扱われるようにする
-  config.case_insensitive_keys = [:BeeBits_id]
+  config.case_insensitive_keys = [:beebits_name]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
   # modifying a user and when used to authenticate or find a user. Default is :email.
 
   # 指定されたキーの前後の空白を取り除くようにする
-  config.strip_whitespace_keys = [:BeeBits_id]
+  config.strip_whitespace_keys = [:beebits_name]
 
   # Tell if authentication through request.params is enabled. True by default.
   # It can be set to an array that will enable params authentication only for the

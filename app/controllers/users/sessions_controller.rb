@@ -9,7 +9,7 @@ module Users
     protected
 
     def configure_sign_in_params
-      params.require(:user).permit(:BeeBits_id, :password, :remember_me)
+      params.require(:user).permit(:beebits_name, :password, :remember_me)
     end
   end
 end
