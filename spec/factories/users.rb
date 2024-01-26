@@ -7,6 +7,6 @@ FactoryBot.define do
     email { 'test@example.com' }
     birth_date { Date.new(1990, 1, 1) }
     password { 'password123' }
-    BeeBits_id { 'testtarou' }
+    beebits_name { 'testtarou' }
   end
 end
