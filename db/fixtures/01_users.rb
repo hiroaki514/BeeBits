@@ -25,17 +25,12 @@ end
   end
 end
 
-# テスト太郎0の個別の記述
+# テストユーザーを個別に作成したい場合の記述
 User.seed do |s|
-  s.name = "テスト太郎0"
+  s.name = "テスト"
   s.phone_number = "09098765432"
-  s.email = "testuser0@example.com"
-  s.birthdate = Time.current - rand(15..25).years
+  s.email = "test@example.com"
+  s.birthdate = (Time.current - rand(15..25).years).to_date
   s.password = 'password123'
-
-  # beebits_nameの生成
-  beebits_name_length = rand(1..15)
-  s.beebits_name = "@"
-  s.beebits_name.insert(rand(beebits_name.length + 1), '_')
-  s.beebits_name += rand(1..100).to_s
+  s.beebits_name = '@test'
 end
