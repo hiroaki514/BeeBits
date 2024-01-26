@@ -29,7 +29,6 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'web-console'
   gem 'seed-fu'
-
 end
 
 group :test do
