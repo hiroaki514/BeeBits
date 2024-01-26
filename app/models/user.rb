@@ -21,8 +21,10 @@ class User < ApplicationRecord
   private
 
   def validate_birthdate
-    errors.add(:birthdate,'を入力してください') unless birthdate.present? && birthdate >= 15.years.ago.to_date
-    errors.add(:birthdate,'が15歳未満の方はご利用いただけません') if birthdate.present? && birthdate < 15.years.ago.to_date
+    if birthdate.blank?
+      errors.add(:birthdate, 'を入力してください')
+    elsif birthdate > 15.years.ago.to_date
+      errors.add(:birthdate, 'が15歳未満の方はご利用いただけません')
+    end
   end
-  
 end
