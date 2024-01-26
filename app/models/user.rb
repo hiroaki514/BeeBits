@@ -27,4 +27,9 @@ class User < ApplicationRecord
       errors.add(:birthdate, 'が15歳未満の方はご利用いただけません')
     end
   end
+
+  # beebits_nameの冒頭に＠を自動で追加する記述
+  def prepend_at_to_beebits_name
+    self.beebits_name = "@#{beebits_name}" unless beebits_name.blank? || beebits_name.start_with?('@')
+  end
 end

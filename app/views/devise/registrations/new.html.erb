@@ -23,14 +23,10 @@
     <%= f.date_field :birthdate, autocomplete: "bdate" %>
   </div>
 
-<div class="field">
-  <%= f.label :beebits_name, t('activerecord.attributes.user.beebits_name') %><br />
-  <div id="beebits_name_input_wrapper">
-    <span id="at_symbol">@</span>
+  <div class="field">
+    <%= f.label :beebits_name, t('activerecord.attributes.user.beebits_name') %><br />
     <%= f.text_field :beebits_name, id: 'beebits_name_input', autocomplete: 'off' %>
   </div>
-</div>
-
 
   <div class="field">
     <%= f.label :password, t('activerecord.attributes.user.password') %>
