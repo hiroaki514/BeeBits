@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-# frozen_string_literal: true
-
->>>>>>> feature_user_registration
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -15,24 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[7.1].define(version: 0) do
-=======
-ActiveRecord::Schema[7.1].define(version: 20_240_118_150_143) do
-  create_table 'users', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
-    t.string 'email', default: '', null: false
-    t.string 'encrypted_password', default: '', null: false
-    t.string 'reset_password_token'
-    t.datetime 'reset_password_sent_at'
-    t.datetime 'remember_created_at'
-    t.datetime 'created_at', null: false
-    t.datetime 'updated_at', null: false
-    t.string 'name', default: '', null: false, comment: '氏名'
-    t.string 'phone_number', comment: '電話番号'
-    t.date 'birthdate', null: false, comment: '生年月日'
-    t.string 'beebits_name', default: '', null: false, comment: 'ログインID'
-    t.index ['email'], name: 'index_users_on_email', unique: true
-    t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
+ActiveRecord::Schema[7.1].define(version: 2024_01_18_150143) do
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name", default: "", null: false, comment: "氏名"
+    t.string "phone_number", comment: "電話番号"
+    t.date "birthdate", null: false, comment: "生年月日"
+    t.string "beebits_name", default: "", null: false, comment: "ログインID"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
->>>>>>> feature_user_registration
+
 end
