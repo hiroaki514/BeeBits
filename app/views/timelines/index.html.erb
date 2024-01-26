@@ -1,0 +1,9 @@
+<h1>Timelines#index</h1>
+
+<% if user_signed_in? %>
+  <p>Welcome, <%= current_user.name %>!</p>
+  <p>あなたのID名は <%= current_user.beebits_name %></p>
+
+  <%= link_to 'Home#indexへ移動', home_index_path %>
+<%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
+<% end %>

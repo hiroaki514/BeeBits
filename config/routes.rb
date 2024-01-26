@@ -3,7 +3,8 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: { sessions: 'users/sessions' }
 
-  get 'home/index'
+  #テスト用
+  get 'home/index', to: 'home#index', as: 'home_index'
 
-  root 'home#index'
+  root 'timelines#index'
 end
