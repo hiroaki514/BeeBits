@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# app/models/user.rb
-
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -18,11 +16,16 @@ class User < ApplicationRecord
                            format: { with: /\A@[\w]+\z/, message: 'は@で始まり、英数字とアンダーバー(_)のみが使用できます' },
                            length: { maximum: 15 }
 
+  before_validation :prepend_at_to_beebits_name
+
   private
 
   def validate_birthdate
-    errors.add(:birthdate,'を入力してください') unless birthdate.present? && birthdate >= 15.years.ago.to_date
-    errors.add(:birthdate,'が15歳未満の方はご利用いただけません') if birthdate.present? && birthdate < 15.years.ago.to_date
+    errors.add(:birthdate, 'を入力してください') unless birthdate.present? && birthdate >= 15.years.ago.to_date
+    errors.add(:birthdate, 'が15歳未満の方はご利用いただけません') if birthdate.present? && birthdate < 15.years.ago.to_date
   end
-  
+
+  def prepend_at_to_beebits_name
+    self.beebits_name = "@#{beebits_name}" unless beebits_name.blank? || beebits_name.start_with?('@')
+  end
 end
