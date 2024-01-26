@@ -30,6 +30,6 @@ class User < ApplicationRecord
 
   # beebits_nameの冒頭に＠を自動で追加する記述
   def prepend_at_to_beebits_name
-    self.beebits_name = "@#{beebits_name}" unless beebits_name.blank? || beebits_name.start_with?('@')
+    self.beebits_name = "@#{beebits_name}" unless beebits_name.blank? || beebits_name.match?(/\A@[^@]+\z/)
   end
 end
