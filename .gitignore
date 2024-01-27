@@ -43,3 +43,6 @@
 /tmp/cache/*
 !/tmp/cache/.keep
 /tmp/pids/server.pid
+
+# Ignore node_modules directory
+node_modules/
