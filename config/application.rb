@@ -25,6 +25,9 @@ module BeeBits
     # Add the following lines to set Rspec as the default test framework
     config.generators do |g|
       g.test_framework :rspec
+      g.skip_routes false
+      g.assets false
+      g.helper false
     end
   end
 end
