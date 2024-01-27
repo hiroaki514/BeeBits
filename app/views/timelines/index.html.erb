@@ -1,8 +1,8 @@
 <h1>Timelines#index</h1>
 
 <% if user_signed_in? %>
-  <p>Welcome, <%= current_user.name %>!</p>
-  <p>あなたのID名は <%= current_user.beebits_name %></p>
-
-<%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
+  <div id="timeline-app"></div>
+  <%= javascript_pack_tag 'timeline' %>
+<% else %>
+  <p>Please sign in to view the timeline.</p>
 <% end %>
