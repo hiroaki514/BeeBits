@@ -16,8 +16,6 @@ class User < ApplicationRecord
                            format: { with: /\A@[\w]+\z/, message: 'は@で始まり、英数字とアンダーバー(_)のみが使用できます' },
                            length: { maximum: 15 }
 
-  before_validation :prepend_at_to_beebits_name
-
   private
 
   def validate_birthdate
@@ -26,10 +24,5 @@ class User < ApplicationRecord
     elsif birthdate > 15.years.ago.to_date
       errors.add(:birthdate, 'が15歳未満の方はご利用いただけません')
     end
-  end
-
-  # beebits_nameの冒頭に＠を自動で追加する記述
-  def prepend_at_to_beebits_name
-    self.beebits_name = "@#{beebits_name}" unless beebits_name.blank? || beebits_name.match?(/\A@[^@]+\z/)
   end
 end
