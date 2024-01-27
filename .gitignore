@@ -43,3 +43,10 @@
 /tmp/cache/*
 !/tmp/cache/.keep
 /tmp/pids/server.pid
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
