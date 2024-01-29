@@ -1,14 +1,56 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
+# Dependabot version updates configuration
 version: 2
-updates:
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "10:00"
 
+# Update settings for Bundler
+updates:
+  - package-ecosystem: "bundler"  # パッケージエコシステム: Bundler
+    directory: "/"                # マニフェストが存在するディレクトリ
+    schedule:
+      interval: "weekly"           # 更新の頻度: 週次
+      day: "monday"                # 更新の曜日: 月曜日
+      time: "10:00"                # 更新の時間: 10:00
+
+    # オプション設定
+    options:
+      # 自動マージを無効にする
+      automerge: false
+
+      # マージ後にブランチを削除しない設定
+      delete_merged_branch_on_merge: false
+
+      # 更新が古くなった場合にプルリクエストを閉じない設定
+      close_old_pull_requests: false
+
+      # 更新が取り消された場合にプルリクエストを閉じない設定
+      reopen_closed: true
+
+      # プルリクエストがマージされなかった場合にブランチを削除しない設定
+      skip_prs_with_labels:
+        - "do not merge"
+
+      # プルリクエストが閉じられた際に理由をクローズしたブランチへコメントする設定
+      commit_message_options:
+        merge: "Rebase and merge if necessary"
+        merge_fallback: "Rebase and merge if necessary"
+        squash: "Rebase and merge if necessary"
+        squash_fallback: "Rebase and merge if necessary"
+        # クローズされた理由をコメントに追加
+        closed: "Rebase and merge if necessary. このプルリクエストはDependabotによって変更が取り消されたか、古くなったために自動的にクローズされました。"
+
+      # ブランチが古くなり、かつマージされた後にコメントを追加して自動削除
+      outdated:
+        close_pr: true
+        close_issue: true
+        comments:
+          - content: >
+              このブランチは古くなり、Dependabotによって自動的にクローズおよび削除されました。
+
+      # プルリクエストが取り消された場合にコメントを追加して自動削除
+      pull_request_rules:
+        - label: "invalid"
+          # このルールに一致する場合、コメントを追加してプルリクエストを閉じる
+          actions:
+            - close
+            - comment:
+                content: >
+                  このプルリクエストはDependabotによって取り消されました。自動的にクローズおよび削除されます。
