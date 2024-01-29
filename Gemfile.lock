@@ -90,11 +90,11 @@ GEM
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 2.11.8, < 3)
     builder (3.2.4)
-    capybara (3.39.2)
+    capybara (3.40.0)
       addressable
       matrix
       mini_mime (>= 0.1.3)
-      nokogiri (~> 1.8)
+      nokogiri (~> 1.11)
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
@@ -247,7 +247,7 @@ GEM
     rspec-mocks (3.12.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-rails (6.1.0)
+    rspec-rails (6.1.1)
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       railties (>= 6.1)
@@ -256,7 +256,7 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    rubocop (1.60.1)
+    rubocop (1.60.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -302,12 +302,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.7.0-aarch64-linux)
-    sqlite3 (1.7.0-arm-linux)
-    sqlite3 (1.7.0-arm64-darwin)
-    sqlite3 (1.7.0-x86-linux)
-    sqlite3 (1.7.0-x86_64-darwin)
-    sqlite3 (1.7.0-x86_64-linux)
     stimulus-rails (1.3.3)
       railties (>= 6.0.0)
     stringio (3.1.0)
@@ -362,7 +356,7 @@ DEPENDENCIES
   mysql2 (~> 0.5)
   puma (~> 6.4)
   rails (~> 7.1.3)
-  rspec-rails (~> 6.1.0)
+  rspec-rails (~> 6.1.1)
   rubocop
   rubocop-performance
   rubocop-rails
@@ -370,7 +364,6 @@ DEPENDENCIES
   seed-fu
   selenium-webdriver
   sprockets-rails
-  sqlite3 (~> 1.4)
   stimulus-rails
   turbo-rails
   tzinfo-data
