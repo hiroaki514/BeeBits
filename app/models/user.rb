@@ -8,18 +8,24 @@ class User < ApplicationRecord
   validates :phone_number, format: { with: /\A(?:\+81|0)\d{9,10}\z/, message: 'は日本の携帯電話番号の形式で入力してください' },
                            allow_blank: true
   validates :email, uniqueness: true,
-                    format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'は有効なメールアドレスの形式で入力してください' }
+                    format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'は有効な形式で入力してください' }
   validates :birthdate, presence: true
   validates :password, length: { minimum: 8 },
                        format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/, message: 'は英数字の組み合わせで8文字以上で入力してください' }
-  validates :beebits_name, presence: true, uniqueness: { case_sensitive: true, on: :create },
-                           format: { with: /\A@[\w]+\z/, message: 'は@で始まり、英数字とアンダーバー(_)のみが使用できます' },
-                           length: { maximum: 15 }
+  validates :beebits_name, presence: true,
+                       uniqueness: { case_sensitive: false, on: :create },
+                       format: { with: /\A@[\w]+\z/, message: 'は英数字とアンダーバー(_)のみが使用できます' },
+                       length: { maximum: 15 }
   validate :validate_birthdate
 
   private
 
   def validate_birthdate
     errors.add(:birthdate, 'が15歳未満の方はご利用いただけません') if birthdate && birthdate > 15.years.ago.to_date
+  end
+
+  def unique_username_case_insensitive
+    existing_user = User.where("lower(beebits_name) = ?", beebits_name.downcase).where.not(id: id).first
+    errors.add(:beebits_name,"はすでに存在します") if existing_user
   end
 end
