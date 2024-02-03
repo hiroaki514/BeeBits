@@ -7,19 +7,17 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore all logfiles and tempfiles.
+# Ignore logfiles, tempfiles, and pidfiles.
 /log/*
 !/log/.keep
 /log/*.log
 /tmp/*
 !/tmp/.keep
-
-# Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore uploaded files in development.
+# Ignore uploaded files and storage in development.
 /storage/*
 !/storage/.keep
 /tmp/storage/*
