@@ -14,6 +14,7 @@ module Users
     # 新規登録時のStrong Parametersを設定
     def configure_sign_up_params
       # beebits_nameの冒頭に＠を自動で追加する処理
+      binding.irb
       params[:user][:beebits_name] = "@#{params[:user][:beebits_name]}" unless params[:user][:beebits_name].blank?
     end
 
