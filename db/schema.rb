@@ -22,7 +22,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_124925) do
     t.string "name", default: "", null: false, comment: "氏名"
     t.string "phone_number", comment: "電話番号"
     t.date "birthdate", null: false, comment: "生年月日"
-    t.binary "beebits_name", limit: 1
+    t.string "beebits_name", collation: "utf8mb4_bin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

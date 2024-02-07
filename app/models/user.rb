@@ -18,6 +18,17 @@ class User < ApplicationRecord
                        length: { maximum: 15 }
   validate :validate_birthdate
 
+  # deviseのデフォルト設定によるデータベース保存時のdowncase挙動を上書きで停止
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["lower(beebits_name) = :value", { :value => login.downcase }]).first
+    else
+
+      where(conditions[:beebits_name].downcase).first
+    end
+  end
+
   private
 
   def validate_birthdate

@@ -64,7 +64,7 @@ Devise.setup do |config|
   # to authenticate or find a user. Default is :email.
 
   # 指定されたキーが大文字小文字を区別せずに同一として扱われるようにする
-  config.case_insensitive_keys = [:beebits_name]
+  # config.case_insensitive_keys = [:email]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
@@ -334,4 +334,6 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
+
+  
 end
