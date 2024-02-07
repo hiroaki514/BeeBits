@@ -29,6 +29,9 @@ group :development, :test do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'web-console'
+  gem 'pry-rails'
+  gem 'pry-byebug'
+  gem 'pry-nav'
 end
 
 group :test do
