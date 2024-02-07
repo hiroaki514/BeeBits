@@ -24,8 +24,7 @@ class User < ApplicationRecord
     if login = conditions.delete(:login)
       where(conditions).where(["lower(beebits_name) = :value", { :value => login.downcase }]).first
     else
-      binding.irb
-      where(conditions[:beebits_name].downcase).first
+      where(["lower(beebits_name) = :value", { :value => conditions[:beebits_name].downcase }]).first
     end
   end
 
