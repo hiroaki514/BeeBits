@@ -6,12 +6,22 @@ ja:
           attributes:
             email:
               taken: "はすでに存在しています"
+              too_long: "は%{count}文字以内で入力してください"
             password:
               too_short: "は%{count}文字以上で入力してください"
+              too_long: "は%{count}文字以内で入力してください"
             name:
+              too_short: "は%{count}文字以上で入力してください"
               too_long: "は%{count}文字以内で入力してください"
             beebits_name:
               taken: "はすでに存在しています"
+            password_confirmation:
+              confirmation: "が一致しません"
+            beebits_name:
+              too_long: "は@を含め%{count}文字以内で入力してください"
+          messages:
+            too_long: "は%{count}文字以内で入力してください"
+          birthdate_invalid: "生年月日が15歳未満の方はご利用いただけません"
     attributes:
       user:
         name: "名前"
