@@ -110,15 +110,28 @@ RSpec.describe User, type: :model do
       end
 
       it '入力が8文字以上であること' do
-        
+        user = build(:user, password: 'bee83')
+        user.valid?
+        expect(user.errors.full_messages).to include('パスワード は8文字以上で入力してください')
       end
 
       it '入力が8文字以上かつ英数字が含まれること' do
-        
+        user = build(:user, password: 'bee83')
+        user.valid?
+        expect(user.errors.full_messages).to include('パスワード は英数字の組み合わせで8文字以上で入力してください')
       end
 
       it '入力が128文字以内であること' do
-        
+        user = build(:user, password: 'bee83')
+        user.valid?
+        expect(user.errors.full_messages).to include('パスワード は128文字以内で入力してください')
+      end
+
+      it '入力が確認用と一致すること' do
+        user = build(:user, password: 'password123')
+        user = build(:user, password_confirmation: 'password123')
+        user.valid?
+        expect(user.errors.full_messages).to include('パスワード(確認用) が一致しません')
       end
     end
   end

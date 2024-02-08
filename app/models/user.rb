@@ -19,6 +19,7 @@ class User < ApplicationRecord
                        format: { with: /\A@[\w]+\z/, message: 'は英数字とアンダーバー(_)のみが使用できます' },
                        length: { maximum: 15 }
   validate :validate_birthdate
+  validate :birthdate_validity
 
   # deviseのデフォルト設定によるデータベース保存時のdowncase挙動を上書きで停止
   def self.find_first_by_auth_conditions(warden_conditions)
@@ -34,6 +35,12 @@ class User < ApplicationRecord
 
   def validate_birthdate
     errors.add(:birthdate, 'が15歳未満の方はご利用いただけません') if birthdate && birthdate > 15.years.ago.to_date
+  end
+
+  def birthdate_validity
+    if birthdate.blank? || birthdate > Date.current || birthdate < 150.years.ago.to_date
+      errors.add(:birthdate, 'の入力が正しくありません')
+    end
   end
 
   def unique_username_case_insensitive
