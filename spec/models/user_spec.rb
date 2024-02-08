@@ -8,7 +8,7 @@ RSpec.describe User, type: :model do
       it '名前の入力が必須であること' do
         user = build(:user, name: '')
         user.valid?
-        expect(user.errors.full_messages).to include('名前を入力してください')
+        expect(user.errors.full_messages).to include('名前 を入力してください')
       end
     end
   end
