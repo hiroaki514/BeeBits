@@ -72,7 +72,7 @@ RSpec.describe User, type: :model do
       end
 
       it '入力が15歳以上であること' do
-        user = build(:user, birthdate: three_days_ago - 15.years - 1.day)
+        user = build(:user, birthdate: '2024-01-01')
         user.valid?
         expect(user.errors.full_messages).to include('生年月日 が15歳未満の方はご利用いただけません')
       end
@@ -90,7 +90,7 @@ RSpec.describe User, type: :model do
       end
 
       it '入力が@を含めて15文字以内であること' do
-        user = build(:user, beebits_name: '@beebits_test123')
+        user = build(:user, beebits_name: 'beebits_test123')
         user.valid?
         expect(user.errors.full_messages).to include('BeeBitsユーザー名 は文字以内で入力してください')
       end
