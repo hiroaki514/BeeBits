@@ -1,23 +1,25 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  devise  :database_authenticatable, :registerable,
+          :recoverable, :rememberable, :validatable
 
   validates :name, presence: true, length: { minimum: 2, maximum: 50 }
 
-  validates :phone_number, format: { with: /\A(?:\+81|0)\d{9,10}\z/, message: 'は日本の携帯電話番号の形式で入力してください' },
-                           allow_blank: true
+  validates :phone_number, format: {
+                        with: /\A(?:\+81|0(?:70|80|90))\d{8,9}\z/,
+                        message: 'は日本の携帯電話番号の形式で入力してください'},
+                        allow_blank: true
   validates :email, uniqueness: true,
-                           format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'は有効な形式で入力してください' },
-                           length: { maximum: 254 }
+                        format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'は有効な形式で入力してください' },
+                        length: { maximum: 254 }
   validates :birthdate, presence: true
   validates :password, length: { minimum: 8 },
-                       format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/, message: 'は英数字の組み合わせで8文字以上で入力してください' }
+                        format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/, message: 'は英数字の組み合わせで8文字以上で入力してください' }
   validates :beebits_name, presence: true,
-                       uniqueness: { case_sensitive: false, on: :create },
-                       format: { with: /\A@[\w]+\z/, message: 'は英数字とアンダーバー(_)のみが使用できます' },
-                       length: { maximum: 15 }
+                        uniqueness: { case_sensitive: false, on: :create },
+                        format: { with: /\A@[\w]+\z/, message: 'は英数字とアンダーバー(_)のみが使用できます' },
+                        length: { maximum: 15 }
   validate :validate_birthdate
   validate :birthdate_validity
 

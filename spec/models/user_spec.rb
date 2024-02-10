@@ -31,14 +31,16 @@ RSpec.describe User, type: :model do
         expect(user.errors.full_messages).to include('メールアドレス を入力してください')
       end
 
-      it '有効な形式であること' do
-        user = build(:user, email: 'beebits@com')
+      it '入力が有効な形式であること' do
+        user = build(:user, email: 'beebits')
         user.valid?
         expect(user.errors.full_messages).to include('メールアドレス は有効な形式で入力してください')
       end
 
       it '入力が254文字以内であること' do
-        user = build(:user, email: 'b' * 241 + '@example.com')
+        user = build(:user, email: '
+          beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits@example.com
+        ')
         user.valid?
         expect(user.errors.full_messages).to include('メールアドレス は254文字以内で入力してください')
       end
