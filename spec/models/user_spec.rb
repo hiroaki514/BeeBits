@@ -38,7 +38,7 @@ RSpec.describe User, type: :model do
       end
 
       it '大文字小文字を区別せずに、同じメールアドレスが存在しないこと' do
-        user1 = create(:user, email: 'BeeBits@example.com')
+        create(:user, email: 'BeeBits@example.com')
 
         user2 = build(:user, email: 'beebits@example.com')
         user2.valid?
@@ -46,9 +46,12 @@ RSpec.describe User, type: :model do
       end
 
       it '入力が254文字以内であること' do
-        user = build(:user, email: 
-          'beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits@example.com'
-        )
+        user = build(:user,
+                     email: 'beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits
+          beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits
+          beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits
+          beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits
+          beebitsbeebitsbeebitsbeebits@example.com')
         user.valid?
         expect(user.errors.full_messages).to include('メールアドレス は254文字以内で入力してください')
       end
@@ -56,7 +59,6 @@ RSpec.describe User, type: :model do
 
     context '電話番号' do
       it '入力が必須であること' do
-
       end
 
       it '日本国内の電話番号であること' do
@@ -92,7 +94,7 @@ RSpec.describe User, type: :model do
       end
 
       it '未来の日付は無効であること' do
-        user = build(:user, birthdate: Date.today + 1.day)
+        user = build(:user, birthdate: Time.zone.today + 1.day)
         user.valid?
         expect(user.errors.full_messages).to include('生年月日 の入力が正しくありません')
       end
@@ -106,7 +108,7 @@ RSpec.describe User, type: :model do
       end
 
       it '大文字小文字を区別せずに、同じBeeBitsユーザー名が存在しないこと' do
-        user1 = create(:user, beebits_name: '@Bee_Bits')
+        create(:user, beebits_name: '@Bee_Bits')
 
         user2 = build(:user, beebits_name: '@bee_bits')
         user2.valid?
@@ -156,14 +158,13 @@ RSpec.describe User, type: :model do
       it '入力が128文字以内であること' do
         user = build(:user, password:
           'beebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebitsbeebits
-          beebitsbeebitsbeebitsbeebitsbeebitsbeebits123'
-        )
+          beebitsbeebitsbeebitsbeebitsbeebitsbeebits123')
         user.valid?
         expect(user.errors.full_messages).to include('パスワード は128文字以内で入力してください')
       end
 
       it '入力が確認用と一致すること' do
-        user = build(:user, password: 'password123')
+        build(:user, password: 'password123')
         user = build(:user, password_confirmation: 'password1234')
         user.valid?
         expect(user.errors.full_messages).to include('パスワード(確認用) が一致しません')

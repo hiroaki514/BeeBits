@@ -31,10 +31,10 @@ group :development, :test do
 end
 
 group :development do
-  gem 'web-console'
-  gem 'pry-rails'
   gem 'pry-byebug'
   gem 'pry-nav'
+  gem 'pry-rails'
+  gem 'web-console'
 end
 
 group :test do
