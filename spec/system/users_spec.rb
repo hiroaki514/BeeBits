@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Users', type: :system do
-
   it 'ユーザー登録ページにアクセスできること' do
     visit new_user_registration_path
     expect(page).to have_content 'アカウントを作成'
@@ -118,7 +117,7 @@ RSpec.describe 'Users', type: :system do
     it 'メールアドレスの入力が255文字以上の場合、エラーメッセージが表示されること' do
       visit new_user_registration_path
       fill_in '名前', with: '蜜蜂太郎'
-      fill_in 'メールアドレス', with: 'a' * 254 + '@example.com'
+      fill_in 'メールアドレス', with: "#{'a' * 254}@example.com"
       fill_in '生年月日', with: '1995-01-01'
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
@@ -128,7 +127,6 @@ RSpec.describe 'Users', type: :system do
     end
 
     it '電話番号のみ未入力の場合、エラーメッセージが表示されること' do
-
     end
 
     it '国内以外の電話番号の場合、エラーメッセージが表示されること' do

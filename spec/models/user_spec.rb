@@ -47,7 +47,7 @@ RSpec.describe User, type: :model do
 
       it '入力が254文字以内であること' do
         user = build(:user,
-                     email: 'a' * 254 + '@example.com')
+                     email: "#{'a' * 254}@example.com")
         user.valid?
         expect(user.errors.full_messages).to include('メールアドレス は254文字以内で入力してください')
       end
@@ -152,7 +152,7 @@ RSpec.describe User, type: :model do
       end
 
       it '入力が128文字以内であること' do
-        user = build(:user, password: 'a' * 129 )
+        user = build(:user, password: 'a' * 129)
         user.valid?
         expect(user.errors.full_messages).to include('パスワード は128文字以内で入力してください')
       end

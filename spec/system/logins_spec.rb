@@ -3,10 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'Users', type: :system do
-
   it '未ログインの場合ログインページへ遷移すること' do
     visit root_path
-    expect(page).to have_text('ログイン')
+    expect(page).to have_current_path(new_user_session_path)
   end
 
   context 'ログイン' do
