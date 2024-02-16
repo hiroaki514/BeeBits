@@ -11,17 +11,15 @@ RSpec.describe 'Users', type: :system do
   end
 
   describe 'ログイン' do
-
     before do
       create(:user,
-        name: '蜜蜂太郎',
-        email: 'beebits@example.com',
-        phone_number: '08012345678',
-        birthdate: '1995-01-01',
-        beebits_name: '@Bee_Bits',
-        password: 'password123',
-        password_confirmation: 'password123'
-      )
+             name: '蜜蜂太郎',
+             email: 'beebits@example.com',
+             phone_number: '08012345678',
+             birthdate: '1995-01-01',
+             beebits_name: '@Bee_Bits',
+             password: 'password123',
+             password_confirmation: 'password123')
     end
 
     it '正しい情報でログインができること' do
@@ -36,14 +34,13 @@ RSpec.describe 'Users', type: :system do
   describe 'ログアウト' do
     before do
       create(:user,
-        name: '蜜蜂太郎',
-        email: 'beebits@example.com',
-        phone_number: '08012345678',
-        birthdate: '1995-01-01',
-        beebits_name: '@Bee_Bits',
-        password: 'password123',
-        password_confirmation: 'password123'
-      )
+             name: '蜜蜂太郎',
+             email: 'beebits@example.com',
+             phone_number: '08012345678',
+             birthdate: '1995-01-01',
+             beebits_name: '@Bee_Bits',
+             password: 'password123',
+             password_confirmation: 'password123')
     end
 
     it 'ログアウトができること' do

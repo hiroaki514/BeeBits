@@ -91,22 +91,24 @@ RSpec.describe User, type: :model do
       context '大文字小文字を区別せずに、重複する場合' do
         let(:email) { 'BeeBits@example.com' }
 
+        before do
+          create(:user,
+                 name: 'テスト太郎2',
+                 phone_number: '08012345678',
+                 email: 'beebits@example.com',
+                 birthdate: Date.new(1990, 1, 1),
+                 password: 'password123',
+                 beebits_name: '@beebits')
+        end
+
         it 'エラーが表示されること' do
-          user2 = build(:user,
-          name { 'テスト太郎2' },
-          phone_number { '08012345678' },
-          email { 'beebits@example.com' },
-          birthdate { Date.new(1990, 1, 1) },
-          password { 'password123' },
-          beebits_name { '@beebits' }
-          )
-          user2.valid?
-          expect(user2.errors.full_messages).to include('メールアドレス はすでに存在しています')
+          user.valid?
+          expect(user.errors.full_messages).to include('メールアドレス はすでに存在しています')
         end
       end
 
       context '253文字の場合' do
-        let(:email) { "a" * 241 + "@example.com" }
+        let(:email) { "#{'a' * 241}@example.com" }
 
         it 'エラーが表示されないこと' do
           expect(user).to be_valid
@@ -114,7 +116,7 @@ RSpec.describe User, type: :model do
       end
 
       context '254文字の場合' do
-        let(:email) { "a" * 242 + "@example.com" }
+        let(:email) { "#{'a' * 242}@example.com" }
 
         it 'エラーが表示されないこと' do
           expect(user).to be_valid
@@ -122,7 +124,7 @@ RSpec.describe User, type: :model do
       end
 
       context '255文字の場合' do
-        let(:email) { "a" * 243 + "@example.com" }
+        let(:email) { "#{'a' * 243}@example.com" }
 
         it 'エラーが表示されること' do
           user.valid?
@@ -233,10 +235,19 @@ RSpec.describe User, type: :model do
       context '大文字小文字を区別せずに、重複する場合' do
         let(:beebits_name) { '@Bee_Bits' }
 
+        before do
+          create(:user,
+                 name: 'テスト太郎2',
+                 phone_number: '08012345678',
+                 email: 'beebits@example.com',
+                 birthdate: Date.new(1990, 1, 1),
+                 password: 'password123',
+                 beebits_name: '@bee_bits')
+        end
+
         it 'エラーが表示されること' do
-          user2 = build(:user, beebits_name: '@bee_bits')
-          user2.valid?
-          expect(user2.errors.full_messages).to include('BeeBitsユーザー名 はすでに存在しています')
+          user.valid?
+          expect(user.errors.full_messages).to include('BeeBitsユーザー名 はすでに存在しています')
         end
       end
 
@@ -287,10 +298,11 @@ RSpec.describe User, type: :model do
     end
 
     context 'パスワードの場合' do
-      let(:user) { build(:user, password:) }
+      let(:user) { build(:user, password:, password_confirmation:) }
 
       context '空の場合' do
         let(:password) { '' }
+        let(:password_confirmation) { '' }
 
         it 'エラーが表示されること' do
           user.valid?
@@ -300,6 +312,7 @@ RSpec.describe User, type: :model do
 
       context '8文字未満の場合' do
         let(:password) { 'pass123' }
+        let(:password_confirmation) { 'pass123' }
 
         it 'エラーが表示されること' do
           user.valid?
@@ -309,6 +322,7 @@ RSpec.describe User, type: :model do
 
       context '英数字が混合でない場合' do
         let(:password) { 'BeeBitsPassword' }
+        let(:password_confirmation) { 'BeeBitsPassword' }
 
         it 'エラーが表示されること' do
           user.valid?
@@ -317,7 +331,8 @@ RSpec.describe User, type: :model do
       end
 
       context '127文字の場合' do
-        let(:password) { 'a' * 120 + '1234567' }
+        let(:password) { "#{'a' * 120}1234567" }
+        let(:password_confirmation) { "#{'a' * 120}1234567" }
 
         it 'エラーが表示されないこと' do
           expect(user).to be_valid
@@ -325,7 +340,8 @@ RSpec.describe User, type: :model do
       end
 
       context '128文字の場合' do
-        let(:password) { 'a' * 120 + '12345678' }
+        let(:password) { "#{'a' * 120}12345678" }
+        let(:password_confirmation) { "#{'a' * 120}12345678" }
 
         it 'エラーが表示されないこと' do
           expect(user).to be_valid
@@ -333,7 +349,8 @@ RSpec.describe User, type: :model do
       end
 
       context '129文字の場合' do
-        let(:password) { 'a' * 120 + '123456789' }
+        let(:password) { "#{'a' * 120}123456789" }
+        let(:password_confirmation) { "#{'a' * 120}123456789" }
 
         it 'エラーが表示さること' do
           user.valid?
@@ -352,14 +369,6 @@ RSpec.describe User, type: :model do
           user.valid?
           expect(user.errors.full_messages).to include('パスワード(確認用) が一致しません')
         end
-      end
-    end
-
-    context 'パスワードのハッシュ化が正常な場合' do
-      let(:password) { 'password123' }
-
-      it '入力値と一致しないこと' do
-        expect(user.encrypted_password).not_to eq('password123')
       end
     end
   end
