@@ -16,7 +16,7 @@ class User < ApplicationRecord
                               message: 'は有効な形式で入力してください' },
                     length: { maximum: 254 }
   validates :birthdate, presence: true
-  validates :password, length: { minimum: 8 },
+  validates :password, length: { minimum: 8, maximum: 128 },
                        format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/,
                                  message: 'は英数字の組み合わせで8文字以上で入力してください' }
   validates :beebits_name, presence: true,
