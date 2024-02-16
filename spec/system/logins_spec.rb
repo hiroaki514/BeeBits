@@ -3,14 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe 'Users', type: :system do
-  it '未ログインの場合ログインページへ遷移すること' do
-    visit root_path
-    expect(page).to have_current_path(new_user_session_path)
+  describe '未ログイン' do
+    it 'ログインページへ遷移すること' do
+      visit root_path
+      expect(page).to have_current_path(new_user_session_path)
+    end
   end
 
-  context 'ログイン' do
-    let!(:user) do
-      User.create(
+  describe 'ログイン' do
+
+    before do
+      create(:user,
         name: '蜜蜂太郎',
         email: 'beebits@example.com',
         phone_number: '08012345678',
@@ -25,14 +28,14 @@ RSpec.describe 'Users', type: :system do
       visit new_user_session_path
       fill_in 'user_beebits_name', with: '@Bee_Bits'
       fill_in 'user_password', with: 'password123'
-      click_button 'ログイン'
+      click_on 'ログイン'
       expect(page).to have_current_path(root_path)
     end
   end
 
   describe 'ログアウト' do
-    let!(:user) do
-      User.create(
+    before do
+      create(:user,
         name: '蜜蜂太郎',
         email: 'beebits@example.com',
         phone_number: '08012345678',
@@ -47,9 +50,9 @@ RSpec.describe 'Users', type: :system do
       visit new_user_session_path
       fill_in 'user_beebits_name', with: '@Bee_Bits'
       fill_in 'user_password', with: 'password123'
-      click_button 'ログイン'
+      click_on 'ログイン'
       expect(page).to have_current_path(root_path)
-      click_button 'ログアウト'
+      click_on 'ログアウト'
       expect(page).to have_current_path(new_user_session_path)
     end
   end

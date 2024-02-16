@@ -8,8 +8,8 @@ RSpec.describe 'Users', type: :system do
     expect(page).to have_content 'アカウントを作成'
   end
 
-  context '正常なユーザー登録' do
-    it '正しい情報を入力してユーザー登録できること' do
+  context '正常なユーザー登録の場合' do
+    it 'ユーザー登録ができること' do
       visit new_user_registration_path
       fill_in '名前', with: '蜜蜂太郎'
       fill_in 'メールアドレス', with: 'test@example.com'
@@ -18,7 +18,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'Timelines#index'
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe 'Users', type: :system do
   context '無効なユーザー登録' do
     it '必須項目を入力せずに登録しようとするとエラーメッセージが表示されること' do
       visit new_user_registration_path
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content('メールアドレス を入力してください')
         .and have_content('パスワード を入力してください')
         .and have_content('名前 を入力してください')
@@ -48,7 +48,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '名前 を入力してください'
     end
 
@@ -60,7 +60,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '名前 は2文字以上で入力してください'
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '名前 は50文字以内で入力してください'
     end
 
@@ -84,7 +84,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'メールアドレス を入力してください'
     end
 
@@ -96,7 +96,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'メールアドレス は有効な形式で入力してください'
     end
 
@@ -110,7 +110,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'メールアドレス はすでに存在しています'
     end
 
@@ -122,7 +122,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'メールアドレス は254文字以内で入力してください'
     end
 
@@ -138,7 +138,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '電話番号 は日本の携帯電話番号の形式で入力してください'
     end
 
@@ -151,7 +151,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '生年月日 を入力してください'
     end
 
@@ -164,7 +164,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '生年月日 の入力が正しくありません'
     end
 
@@ -177,7 +177,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '生年月日 が15歳未満の方はご利用いただけません'
     end
 
@@ -190,7 +190,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@test123'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content '生年月日 が15歳未満の方はご利用いただけません'
     end
 
@@ -203,7 +203,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: ''
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'BeeBitsユーザー名 を入力してください'
     end
 
@@ -217,7 +217,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'BeeBitsユーザー名 はすでに存在しています'
     end
 
@@ -230,7 +230,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits_test_user'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'BeeBitsユーザー名 は@を含め15文字以内で入力してください'
     end
 
@@ -243,7 +243,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@bee!bits'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'BeeBitsユーザー名 は英数字とアンダーバー(_)のみが使用できます'
     end
 
@@ -256,7 +256,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@@beebits'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'BeeBitsユーザー名 は英数字とアンダーバー(_)のみが使用できます'
     end
 
@@ -269,7 +269,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: ''
       fill_in 'パスワード(確認用)', with: 'password123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'パスワード を入力してください'
     end
 
@@ -282,7 +282,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: 'pass123'
       fill_in 'パスワード(確認用)', with: 'pass123'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'パスワード は8文字以上で入力してください'
     end
 
@@ -295,7 +295,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: 'passwordtest'
       fill_in 'パスワード(確認用)', with: 'passwordtest'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'パスワード は英数字の組み合わせで8文字以上で入力してください'
     end
 
@@ -308,7 +308,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: 'password' * 33
       fill_in 'パスワード(確認用)', with: 'password' * 33
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'パスワード は128文字以内で入力してください'
     end
 
@@ -321,7 +321,7 @@ RSpec.describe 'Users', type: :system do
       fill_in 'BeeBitsユーザー名', with: '@beebits'
       fill_in 'パスワード', with: 'password123'
       fill_in 'パスワード(確認用)', with: 'password1234'
-      click_button '登録'
+      click_on '登録'
       expect(page).to have_content 'パスワード(確認用) が一致しません'
     end
   end
