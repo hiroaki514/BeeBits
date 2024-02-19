@@ -111,16 +111,10 @@ RSpec.describe 'Users', type: :system do
 
     context 'メールアドレスが大文字小文字を区別せずに重複する場合' do
       before do
-        create(:user,
-        name: '蜜蜂太郎',
-        email: 'BeeBITS@example.com',
-        phone_number: '08012345678',
-        birthdate: '1995-01-01',
-        beebits_name: '@beebits123',
-        password: 'password123',
-        password_confirmation: 'password123'
-        )
+        create(:user)
       end
+
+      let(:email) { 'BeeBits@example.com' }
 
       it 'エラーが表示されること' do
         expect(page).to have_content 'メールアドレス はすでに存在しています'
@@ -190,16 +184,10 @@ RSpec.describe 'Users', type: :system do
 
     context 'BeeBitsユーザー名が大文字小文字を区別せずに既に存在する場合' do
       before do
-        create(:user,
-          name: '蜜蜂太郎',
-          email: 'beebits@example.com',
-          phone_number: '08012345678',
-          birthdate: '1995-01-01',
-          beebits_name: '@Bee_Bits123',
-          password: 'password123',
-          password_confirmation: 'password123'
-          )
+        create(:user)
       end
+
+      let(:beebits_name) { '@Bee_Bits123' }
 
       it '、エラーが表示されること' do
         expect(page).to have_content 'BeeBitsユーザー名 はすでに存在しています'
