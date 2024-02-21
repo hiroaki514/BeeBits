@@ -27,6 +27,8 @@ class User < ApplicationRecord
   validate :validate_birthdate
   validate :birthdate_validity
 
+  has_many :timelines, dependent: :destroy
+
   # deviseのデフォルト設定によるデータベース保存時のdowncase挙動を上書きで停止
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup

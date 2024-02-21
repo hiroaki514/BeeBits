@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-class CreatePosts < ActiveRecord::Migration[7.1]
+class CreateTimelines < ActiveRecord::Migration[7.1]
   def change
-    create_table :posts do |t|
-      t.string :post_content
+    create_table :timelines do |t|
+      t.text :content
       t.references :user, null: false, foreign_key: true
       t.timestamps
     end

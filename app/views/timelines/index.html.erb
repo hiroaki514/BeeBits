@@ -6,19 +6,17 @@
 <div>
   <%= form_with(model: @post, url: timelines_path, local: true) do |form| %>
     <div>
-      <%= form.label :post_content, "投稿内容:" %>
-      <%= form.text_area :post_content, rows: 4 %>
+      <%= form.label :content, "投稿内容:" %>
+      <%= form.text_area :content, rows: 4 %>
       <%= form.submit "投稿する" %>
     </div>
   <% end %>
 </div>
 
-<div>
-  <% @posts.each do |post| %>
-    <div>
-      <p><strong><%= post.user.name %></strong>: <%= post.post_content %></p>
-    </div>
-  <% end %>
-</div>
+<% @timelines.each do |t| %>
+  <div>
+    <p><strong><%= t.user.beebits_name %></strong>: <%= t.content %></p>
+  </div>
+<% end %>
 
 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>

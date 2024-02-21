@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :post do
+  factory :timeline do
     content { "MyText" }
     user { "MyString" }
     regerences { "MyString" }
