@@ -2,7 +2,7 @@
 
 class TimelinesController < ApplicationController
   def index
-    @timelines = Timeline.all || []
+    @timelines = Timeline.order(created_at: :desc) || []
   end
 
   def new
