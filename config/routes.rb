@@ -7,4 +7,5 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
   }
   root 'timelines#index'
+  resources :timelines
 end
