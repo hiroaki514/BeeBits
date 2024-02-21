@@ -6,7 +6,7 @@ RSpec.describe Timeline, type: :model do
   describe '#validation' do
     context 'テキストの場合' do
       let(:user) { create(:user) }
-      let(:timeline) { create(:timeline, user: user) }
+      let(:timeline) { create(:timeline, user:) }
 
       context '入力が0文字の場合' do
         before do
@@ -67,8 +67,6 @@ RSpec.describe Timeline, type: :model do
           expect(timeline).not_to be_valid
         end
       end
-
     end
   end
-
 end
