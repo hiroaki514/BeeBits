@@ -109,20 +109,8 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    context 'メールアドレスが大文字小文字を区別せずに重複する場合' do
-      before do
-        create(:user)
-      end
-
-      let(:email) { 'BeeBits@example.com' }
-
-      it 'エラーが表示されること' do
-        expect(page).to have_content 'メールアドレス はすでに存在しています'
-      end
-    end
-
     context 'メールアドレスの入力が255文字以上の場合' do
-      let(:email) { 'a' * 243 + '@example.com' }
+      let(:email) { "#{'a' * 243}@example.com" }
 
       it 'エラーが表示されること' do
         expect(page).to have_content 'メールアドレス は254文字以内で入力してください'
@@ -179,18 +167,6 @@ RSpec.describe 'Users', type: :system do
 
       it 'エラーが表示されること' do
         expect(page).to have_content 'BeeBitsユーザー名 を入力してください'
-      end
-    end
-
-    context 'BeeBitsユーザー名が大文字小文字を区別せずに既に存在する場合' do
-      before do
-        create(:user)
-      end
-
-      let(:beebits_name) { '@Bee_Bits123' }
-
-      it '、エラーが表示されること' do
-        expect(page).to have_content 'BeeBitsユーザー名 はすでに存在しています'
       end
     end
 
@@ -257,6 +233,44 @@ RSpec.describe 'Users', type: :system do
         expect(page).to have_content 'パスワード(確認用) が一致しません'
       end
     end
+  end
 
+  describe '重複時のエラー確認' do
+    before do
+      create(:user)
+      visit new_user_registration_path
+      fill_in '名前', with: name
+      fill_in 'メールアドレス', with: email
+      fill_in '電話番号', with: phone_number
+      fill_in '生年月日', with: birthdate
+      fill_in 'BeeBitsユーザー名', with: beebits_name
+      fill_in 'パスワード', with: password
+      fill_in 'パスワード(確認用)', with: password_confirmation
+      click_on '登録'
+    end
+
+    let(:name) { '蜜蜂太郎' }
+    let(:phone_number) { '08012345678' }
+    let(:birthdate) { '1995-01-01' }
+    let(:password) { 'password123' }
+    let(:password_confirmation) { 'password123' }
+
+    context 'メールアドレスが大文字小文字を区別せずに重複する場合' do
+      let(:email) { 'BeeBits@example.com' }
+      let(:beebits_name) { '@bee_bits2' }
+
+      it 'エラーが表示されること' do
+        expect(page).to have_content 'メールアドレス はすでに存在しています'
+      end
+    end
+
+    context 'BeeBitsユーザー名が大文字小文字を区別せずに既に存在する場合' do
+      let(:email) { 'Beebitstest@example.com' }
+      let(:beebits_name) { '@bee_bits123' }
+
+      it '、エラーが表示されること' do
+        expect(page).to have_content 'BeeBitsユーザー名 はすでに存在しています'
+      end
+    end
   end
 end
