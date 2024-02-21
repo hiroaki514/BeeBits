@@ -4,7 +4,7 @@
 <p>あなたのID名は <%= current_user.beebits_name %></p>
 
 <div>
-  <%= form_with(model: @timelines, url: timelines_path, local: true) do |form| %>
+  <%= form_with(model: @timeline, url: timelines_path, local: true) do |form| %>
     <div>
       <%= form.label :content, "投稿内容:" %>
       <%= form.text_area :content, rows: 4 %>
