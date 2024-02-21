@@ -11,27 +11,12 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_02_21_050206) do
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1d644a938b42acd319fafed7522b25d5b0f049d2
   create_table "timelines", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "content"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_timelines_on_user_id"
-<<<<<<< HEAD
-=======
-  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "post_content"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_posts_on_user_id"
->>>>>>> feature_timelins_posts
-=======
->>>>>>> 1d644a938b42acd319fafed7522b25d5b0f049d2
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -51,13 +36,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_21_050206) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   add_foreign_key "timelines", "users"
-=======
-  add_foreign_key "posts", "users"
->>>>>>> feature_timelins_posts
-=======
-  add_foreign_key "timelines", "users"
->>>>>>> 1d644a938b42acd319fafed7522b25d5b0f049d2
 end
