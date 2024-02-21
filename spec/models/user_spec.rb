@@ -93,12 +93,13 @@ RSpec.describe User, type: :model do
 
         before do
           create(:user,
-                 name: 'テスト太郎2',
-                 phone_number: '08012345678',
+                 name: '蜜蜂太郎',
                  email: 'beebits@example.com',
+                 phone_number: '08012345678',
                  birthdate: Date.new(1990, 1, 1),
+                 beebits_name: '@beebits',
                  password: 'password123',
-                 beebits_name: '@beebits')
+                 password_confirmation: 'password123')
         end
 
         it 'エラーが表示されること' do
@@ -237,12 +238,13 @@ RSpec.describe User, type: :model do
 
         before do
           create(:user,
-                 name: 'テスト太郎2',
-                 phone_number: '08012345678',
+                 name: '蜜蜂太郎',
                  email: 'beebits@example.com',
+                 phone_number: '08012345678',
                  birthdate: Date.new(1990, 1, 1),
+                 beebits_name: '@bee_bits',
                  password: 'password123',
-                 beebits_name: '@bee_bits')
+                 password_confirmation: 'password123')
         end
 
         it 'エラーが表示されること' do
