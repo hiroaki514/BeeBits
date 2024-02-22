@@ -5,13 +5,11 @@ require 'rails_helper'
 RSpec.describe Timeline, type: :model do
   describe '#validation' do
     context 'テキストの場合' do
-      let(:user) { create(:user) }
-      let(:timeline) { create(:timeline, user:) }
+      let(:user) { build(:user) }
+      let(:timeline) { build(:timeline, user:, content:) }
 
       context '入力が0文字の場合' do
-        before do
-          timeline.update(content: '')
-        end
+        let(:content) { '' }
 
         it '無効であること' do
           expect(timeline).not_to be_valid
@@ -19,9 +17,7 @@ RSpec.describe Timeline, type: :model do
       end
 
       context '入力が1文字の場合' do
-        before do
-          timeline.update(content: 'あ')
-        end
+        let(:content) { '蜂' }
 
         it '有効であること' do
           expect(timeline).to be_valid
@@ -29,9 +25,7 @@ RSpec.describe Timeline, type: :model do
       end
 
       context '入力が2文字の場合' do
-        before do
-          timeline.update(content: 'あい')
-        end
+        let(:content) { '蜜蜂' }
 
         it '有効であること' do
           expect(timeline).to be_valid
@@ -39,9 +33,7 @@ RSpec.describe Timeline, type: :model do
       end
 
       context '入力が139文字の場合' do
-        before do
-          timeline.update(content: 'あ' * 139)
-        end
+        let(:content) { '蜂' * 139 }
 
         it '有効であること' do
           expect(timeline).to be_valid
@@ -49,9 +41,7 @@ RSpec.describe Timeline, type: :model do
       end
 
       context '入力が140文字の場合' do
-        before do
-          timeline.update(content: 'あ' * 140)
-        end
+        let(:content) { '蜂' * 140 }
 
         it '有効であること' do
           expect(timeline).to be_valid
@@ -59,9 +49,7 @@ RSpec.describe Timeline, type: :model do
       end
 
       context '入力が141文字の場合' do
-        before do
-          timeline.update(content: 'あ' * 141)
-        end
+        let(:content) { '蜂' * 141 }
 
         it '無効であること' do
           expect(timeline).not_to be_valid
