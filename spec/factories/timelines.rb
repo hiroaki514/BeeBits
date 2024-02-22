@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :timeline do
     content { 'テスト投稿' }
-    association :user
+    :user
   end
 end
