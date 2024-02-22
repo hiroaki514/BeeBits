@@ -7,7 +7,7 @@
   <%= form_with(model: @timeline, url: timelines_path, local: true) do |form| %>
     <div>
       <%= form.label :content, "投稿内容:" %>
-      <%= form.text_area :content, rows: 4 %>
+      <%= form.text_area :content, id: 'content', rows: 4 %>
       <%= form.submit "投稿" %>
     </div>
   <% end %>

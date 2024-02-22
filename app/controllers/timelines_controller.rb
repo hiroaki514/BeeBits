@@ -13,9 +13,9 @@ class TimelinesController < ApplicationController
     @timeline = Timeline.new(timeline_params)
     @timeline.user = current_user
     if @timeline.save
-      redirect_to timelines_path, notice: '投稿が作成されました'
+      redirect_to timelines_path, notice: '投稿が送信されました'
     else
-      redirect_to timelines_path, alert: '投稿の作成に失敗しました'
+      redirect_to timelines_path, alert: '投稿に失敗しました'
     end
   end
 
