@@ -2,8 +2,7 @@
 
 FactoryBot.define do
   factory :timeline do
-    content { 'MyText' }
-    user { 'MyString' }
-    regerences { 'MyString' }
+    content { 'テスト投稿' }
+    :user
   end
 end
