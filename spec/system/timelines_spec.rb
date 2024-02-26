@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'Timelines', type: :system do
-  let!(:user) { create(:user) }
+  before do
+    @user = create(:user)
+  end
 
   before do
     visit new_user_session_path
