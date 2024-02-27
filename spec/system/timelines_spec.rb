@@ -5,9 +5,6 @@ require 'rails_helper'
 RSpec.describe 'Timelines', type: :system do
   before do
     @user = create(:user)
-  end
-
-  before do
     visit new_user_session_path
     fill_in 'BeeBitsユーザー名', with: '@bee_bits123'
     fill_in 'パスワード', with: 'password123'
