@@ -1,8 +1,22 @@
 <h1>Timelines#index</h1>
 
-<% if user_signed_in? %>
-  <p>Welcome, <%= current_user.name %>!</p>
-  <p>あなたのID名は <%= current_user.beebits_name %></p>
+<p>Welcome, <%= current_user.name %>!</p>
+<p>あなたのID名は <%= current_user.beebits_name %></p>
+
+<div>
+  <%= form_with(model: @timeline, url: timelines_path, local: true) do |form| %>
+    <div>
+      <%= form.label :content, "投稿内容:" %>
+      <%= form.text_area :content, id: 'content', rows: 4 %>
+      <%= form.submit "投稿" %>
+    </div>
+  <% end %>
+</div>
+
+<% @timelines.each do |t| %>
+  <div>
+    <p><strong><%= t.user.beebits_name %></strong>: <%= t.content %></p>
+  </div>
+<% end %>
 
 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
-<% end %>
