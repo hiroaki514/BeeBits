@@ -10,7 +10,11 @@ RUN apk update && \
     apk add --no-cache -t .build-packages build-base curl-dev mysql-client && \
     gem install bundler && \
     bundle install && \
-    apk del --purge .build-packages
+    apk del --purge .build-packages && \
+    apk add bash curl nodejs && \
+    touch ~/.bashrc && \
+    curl -o- -L https://yarnpkg.com/install.sh | bash && \
+    ln -s "$HOME/.yarn/bin/yarn" /usr/local/bin/yarn
 
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
@@ -18,5 +22,3 @@ ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
-
-#差分
