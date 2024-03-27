@@ -170,16 +170,6 @@ GEM
     net-smtp (0.4.0.1)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.16.3-aarch64-linux)
-      racc (~> 1.4)
-    nokogiri (1.16.3-arm-linux)
-      racc (~> 1.4)
-    nokogiri (1.16.3-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.3-x86-linux)
-      racc (~> 1.4)
-    nokogiri (1.16.3-x86_64-darwin)
-      racc (~> 1.4)
     nokogiri (1.16.3-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
@@ -204,13 +194,9 @@ GEM
     puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.7.3)
-<<<<<<< HEAD
-    rack (3.0.9.1)
+    rack (3.0.10)
     rack-proxy (0.7.7)
       rack
-=======
-    rack (3.0.10)
->>>>>>> main
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -361,12 +347,6 @@ GEM
     zeitwerk (2.6.13)
 
 PLATFORMS
-  aarch64-linux
-  arm-linux
-  arm64-darwin
-  x86-linux
-  x86_64-darwin
-  x86_64-linux
   x86_64-linux-musl
 
 DEPENDENCIES
