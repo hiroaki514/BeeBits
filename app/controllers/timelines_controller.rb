@@ -20,9 +20,9 @@ class TimelinesController < ApplicationController
   end
 
   def destroy
-    @timeline = Timeline.find(params[:id])
-    if @timeline.user == current_user
-      @timeline.destroy
+    timeline = Timeline.find(params[:id])
+    if timeline.user == current_user
+      timeline.destroy
       redirect_to timelines_path, notice: '投稿が削除されました'
     else
       redirect_to timelines_path, alert: '投稿の削除に失敗しました'
