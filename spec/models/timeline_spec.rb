@@ -73,7 +73,6 @@ RSpec.describe Timeline, type: :model do
           expect { timeline.destroy }.not_to change(Timeline, :count)
         end
       end
-
     end
   end
 end

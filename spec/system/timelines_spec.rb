@@ -63,16 +63,13 @@ RSpec.describe 'Timelines', type: :system do
     end
 
     context '投稿削除の場合' do
-
       context '投稿者本人の場合' do
         it '成功すること' do
-
         end
       end
 
       context '他者の投稿の場合' do
         it '削除できないこと' do
-
         end
       end
     end
