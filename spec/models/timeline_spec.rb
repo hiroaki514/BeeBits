@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Timeline, type: :model do
   describe '#validation' do
-    context 'テキストの場合' do
+    context 'テキスト投稿の場合' do
       let(:user) { build(:user) }
       let(:timeline) { build(:timeline, user:, content:) }
 
