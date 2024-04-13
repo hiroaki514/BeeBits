@@ -18,7 +18,11 @@
 <% @timelines.each do |t| %>
   <div>
     <p><strong><%= t.user.beebits_name %></strong>: <%= t.content %></p>
+    <% if current_user == t.user %>
+      <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
+    <% end %>
   </div>
 <% end %>
+
 
 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
