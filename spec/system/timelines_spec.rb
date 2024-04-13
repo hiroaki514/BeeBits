@@ -61,16 +61,36 @@ RSpec.describe 'Timelines', type: :system do
         end
       end
     end
+  end
 
-    context '投稿削除の場合' do
-      context '投稿者本人の場合' do
-        it '成功すること' do
-        end
+  describe '投稿の削除' do
+    let(:user) { create(:user) }
+    let(:dummy_user) { create(:user, :dummy_user) }
+
+    before do
+      visit new_user_session_path
+      fill_in 'BeeBitsユーザー名', with: user.beebits_name
+      fill_in 'パスワード', with: user.password
+      click_on 'ログイン'
+
+      # create(:timeline, user_id: user.id)
+      # create(:timeline, user: user)
+      create(:timeline, user:, content: '自身の投稿')
+      create(:timeline, user: dummy_user, content: '他者の投稿')
+      visit root_path
+    end
+
+    context '投稿者本人の場合' do
+      it '削除ボタンが表示されること' do
+        expect(page).to have_content '削除'
       end
 
-      context '他者の投稿の場合' do
-        it '削除できないこと' do
-        end
+      it '自身の投稿を削除でき、他者の投稿に削除ボタンが表示されていないこと' do
+        click_on '削除'
+        expect(page).to_not have_content '自身の投稿'
+        expect(page).to have_content '他者の投稿'
+        visit root_path
+        expect(page).to_not have_content '削除' #他社の投稿に削除ボタンが表示されないこと
       end
     end
   end
