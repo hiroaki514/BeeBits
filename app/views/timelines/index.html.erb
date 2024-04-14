@@ -19,6 +19,7 @@
     <% if current_user == t.user %>
       <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
     <% end %>
+    <i class="bi bi-star"></i>
   </div>
 <% end %>
 
