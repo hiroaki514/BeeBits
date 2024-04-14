@@ -40,6 +40,11 @@ class User < ApplicationRecord
     end
   end
 
+  # favoritesテーブルにtimeline_idが存在しているかを検索
+  def favorited_by?(timeline_id)
+    favorites.where(timeline_id: timeline_id).exists?
+  end
+
   private
 
   def validate_birthdate
