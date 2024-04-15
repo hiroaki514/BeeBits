@@ -19,10 +19,10 @@
     <% if current_user == t.user %>
       <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
     <% end %>
-    <% if current_user.favorited_by?(timeline.id) %>
-      <td>いいねを外す</td>
+    <% if current_user.favorited_by?(t.id) %>
+      <td><%= button_to 'いいねを外す', destroy_favorite_path(t), method: :DELETE %></td>
     <% else %>
-      <td>いいね</td>
+      <td><%= button_to 'いいね', add_to_favorites_path(t), method: :POST %></td>
     <% end %>
   </div>
 <% end %>
