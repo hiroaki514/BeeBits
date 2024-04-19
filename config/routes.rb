@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   root 'timelines#index'
   resources :timelines
   post 'favorites', to: 'favorites#create', as: 'add_to_favorites'
-  delete 'favorites', to: 'favorites#destroy', as: 'destroy_fovorite'
+  delete 'favorites/:id', to: 'favorites#destroy', as: 'destroy_favorite'
 end
