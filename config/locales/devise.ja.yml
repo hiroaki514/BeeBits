@@ -52,6 +52,12 @@ ja:
         unconfirmed_email: 未確認メールアドレス
         unlock_token: ロック解除用トークン
         updated_at: 更新日
+      timeline:
+        content: "投稿内容"
+        user_id: "ユーザーID"
+      favorite:
+        user_id: "ユーザーID"
+        timeline_id: "投稿ID"
       email:
         blank: "は有効なメールアドレスの形式で入力してください"
       password:

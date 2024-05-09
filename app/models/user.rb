@@ -28,6 +28,7 @@ class User < ApplicationRecord
   validate :birthdate_validity
 
   has_many :timelines, dependent: :destroy
+  has_many :favorites, dependent: :destroy
 
   # deviseのデフォルト設定によるデータベース保存時のdowncase挙動を上書きで停止
   def self.find_first_by_auth_conditions(warden_conditions)
@@ -37,6 +38,11 @@ class User < ApplicationRecord
     else
       where(['lower(beebits_name) = :value', { value: conditions[:beebits_name].downcase }]).first
     end
+  end
+
+  # favoritesテーブルにtimeline_idが存在しているかを検索
+  def favorited_by?(timeline_id)
+    favorites.where(timeline_id: timeline_id).exists?
   end
 
   private
