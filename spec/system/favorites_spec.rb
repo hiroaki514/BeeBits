@@ -13,7 +13,7 @@ RSpec.describe 'Timelines', type: :system do
       fill_in 'パスワード', with: user.password
       click_on 'ログイン'
 
-      create(:timeline, user: dummy_user, content: '他者の投稿')
+      create(:timeline, user: dummy_user, content: 'いいねテスト投稿')
       visit root_path
     end
 
@@ -23,24 +23,29 @@ RSpec.describe 'Timelines', type: :system do
       end
 
       it 'いいねを外すに変わること' do
-
+        expect(page).to have_content 'いいねを外す'
       end
       it 'いいねカウントが１増えること' do
-
+        expect(page).to have_content '1'
       end
       it 'favoritesテーブルのレコード数が1になること' do
         expect(Favorite.count).to eq(1)
       end
     end
     context 'いいねを外した場合' do
-      it 'いいねに変わること' do
-
+      before do
+        click_on 'いいね'
+        click_on 'いいねを外す'
       end
-      it 'いいねカウントが１減ること' do
 
+      it 'いいねに変わること' do
+        expect(page).to have_content 'いいね'
+      end
+      it 'いいねカウントが0になること' do
+        expect(page).to have_content '0'
       end
       it 'favoritesテーブルのレコード数が0になること' do
-
+        expect(Favorite.count).to eq(0)
       end
     end
   end
