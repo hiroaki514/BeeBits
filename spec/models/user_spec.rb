@@ -374,4 +374,25 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'favorited_by?' do
+    let(:user) { create(:user) }
+    let(:timeline) { create(:timeline, user: user) }
+
+    context '既にいいねを押している場合' do
+      before do
+        create(:favorite, user: user, timeline: timeline)
+      end
+
+      it 'trueを返すこと' do
+        expect(user.favorited_by?(timeline.id)).to eq(true)
+      end
+    end
+
+    context 'まだいいねを押していない場合' do
+      it 'falseを返すこと' do
+        expect(user.favorited_by?(timeline.id)).to eq(false)
+      end
+    end
+  end
 end
