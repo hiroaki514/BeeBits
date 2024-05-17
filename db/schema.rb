@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_15_223745) do
   end
 
   create_table "reserve_post_timelines", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "content"
+    t.text "content", null: false, comment: "予約投稿内容"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
