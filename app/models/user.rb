@@ -42,7 +42,7 @@ class User < ApplicationRecord
 
   # favoritesテーブルにtimeline_idが存在しているかを検索
   def favorited_by?(timeline_id)
-    favorites.where(timeline_id: timeline_id).exists?
+    favorites.exists?(timeline_id:)
   end
 
   private
