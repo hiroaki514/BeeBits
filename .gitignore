@@ -44,3 +44,6 @@
 
 # Ignore node_modules directory
 node_modules/
+
+# Ignore development_materials directory
+development_materials/*
