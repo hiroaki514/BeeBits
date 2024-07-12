@@ -1,0 +1,11 @@
+<h1><%= @user.name %>のプロフィール</h1>
+
+<% @timelines.each do |timeline| %>
+  <div>
+    <p><%= timeline.content %></p>
+    <p><%= timeline.created_at %></p>
+  </div>
+<% end %>
+
+
+<%= link_to 'タイムラインへ戻る', timelines_path %>
