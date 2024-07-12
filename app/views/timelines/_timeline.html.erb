@@ -1,0 +1,13 @@
+<% @timelines.each do |t| %>
+  <div>
+    <p><strong><%= t.user.beebits_name %></strong>: <%= t.content %></p>
+    <% if current_user == t.user %>
+      <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
+    <% end %>
+    <% if current_user.favorited_by?(t.id) %>
+      <%= button_to 'いいねを外す', destroy_favorite_path(t), method: :delete %> <%= t.favorites.count %>
+    <% else %>
+      <%= button_to 'いいね', add_to_favorites_path(t), method: :post %> <%= t.favorites.count %>
+    <% end %>
+  </div>
+<% end %>
