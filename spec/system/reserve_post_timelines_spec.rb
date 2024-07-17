@@ -11,7 +11,7 @@ RSpec.describe 'ReservePostTimelines', type: :system do
       fill_in 'パスワード', with: 'password123'
       click_on 'ログイン'
     end
-    
+
     it '予約投稿テーブルに値が保存されること' do
       fill_in 'reserve_post_content', with: '予約投稿'
       click_on '予約投稿'

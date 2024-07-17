@@ -28,6 +28,7 @@ class User < ApplicationRecord
   validate :birthdate_validity
 
   has_many :timelines, dependent: :destroy
+  has_many :reserve_post_timelines, dependent: :destroy
   has_many :favorites, dependent: :destroy
 
   # deviseのデフォルト設定によるデータベース保存時のdowncase挙動を上書きで停止

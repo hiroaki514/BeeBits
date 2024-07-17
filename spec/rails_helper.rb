@@ -28,7 +28,7 @@ Capybara.server_port = 3001
 require 'rake'
 RSpec.configure do |config|
   config.before(:suite) do
-    Rails.application.load_tasks #全てのrakeタスクを読み込む
+    Rails.application.load_tasks # 全てのrakeタスクを読み込む
   end
 
   config.before(:each) do
