@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   resources :timelines
   post 'favorites/:id', to: 'favorites#create', as: 'add_to_favorites'
   delete 'favorites/:id', to: 'favorites#destroy', as: 'destroy_favorite'
+  resources :reserve_post_timelines, only: [:create]
 end
