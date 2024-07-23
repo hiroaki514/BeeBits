@@ -90,7 +90,7 @@ RSpec.describe 'Timelines', type: :system do
         expect(page).to_not have_content '自身の投稿'
         expect(page).to have_content '他者の投稿'
         visit root_path
-        expect(page).to_not have_content '削除' #他社の投稿に削除ボタンが表示されないこと
+        expect(page).to_not have_content '削除' # 他社の投稿に削除ボタンが表示されないこと
       end
     end
   end

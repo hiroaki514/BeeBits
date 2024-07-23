@@ -1,0 +1,4 @@
+<%= form_with(model: @reserve_post, url: reserve_posts_path) do |form| %>
+  <%= form.text_area :content, placeholder: "投稿内容を入力してください" %>
+  <%= form.submit "予約投稿" %>
+<% end %>

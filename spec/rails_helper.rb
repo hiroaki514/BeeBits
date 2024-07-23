@@ -25,6 +25,17 @@ Capybara.register_driver :headless_chromium do |app|
 end
 Capybara.server_port = 3001
 
+require 'rake'
+RSpec.configure do |config|
+  config.before(:suite) do
+    Rails.application.load_tasks # 全てのrakeタスクを読み込む
+  end
+
+  config.before(:each) do
+    Rake.application.tasks.each(&:reenable)
+  end
+end
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
