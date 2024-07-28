@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   root 'timelines#index'
   resources :timelines
   resources :users, only: [] do
-    resource :profile, only: [:show], controller: 'profiles'
+    resource :profile, only: %i[show edit update], controller: 'profiles'
   end
   post 'favorites/:id', to: 'favorites#create', as: 'add_to_favorites'
   delete 'favorites/:id', to: 'favorites#destroy', as: 'destroy_favorite'

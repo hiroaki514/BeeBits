@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  attr_accessor :skip_password_validation
+
   devise  :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
 
@@ -16,14 +18,19 @@ class User < ApplicationRecord
                               message: 'は有効な形式で入力してください' },
                     length: { maximum: 254 }
   validates :birthdate, presence: true
+
   validates :password, length: { minimum: 8, maximum: 128 },
                        format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/,
-                                 message: 'は英数字の組み合わせで8文字以上で入力してください' }
+                                 message: 'は英数字の組み合わせで8文字以上で入力してください' },
+                       allow_nil: true, unless: -> { skip_password_validation }
+
   validates :beebits_name, presence: true,
                            uniqueness: { case_sensitive: false, on: :create },
                            format: { with: /\A@[\w]+\z/,
                                      message: 'は英数字とアンダーバー(_)のみが使用できます' },
                            length: { maximum: 15 }
+  validates :bio, length: { maximum: 160 } # 自己紹介(bio)のバリデーション
+
   validate :validate_birthdate
   validate :birthdate_validity
 
