@@ -6,7 +6,9 @@
 </div>
 
 <div>
-  <%= render 'timelines/timeline' %>
+  <% @timelines.each do |timeline| %>
+    <%= render 'timelines/timeline', timeline: timeline %>
+  <% end %>
 </div>
 
 <%= link_to 'タイムラインへ戻る', timelines_path %>

@@ -1,18 +1,16 @@
-<% @timelines.each do |t| %>
+<div>
   <div>
-    <div>
-      <strong><%= t.user.name %></strong><%= t.user.beebits_name %>
-    </div>
-    <div>
-      <%= t.content %>
-    </div>
-    <% if current_user == t.user %>
-      <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
-    <% end %>
-    <% if current_user.favorited_by?(t.id) %>
-      <%= button_to 'いいねを外す', destroy_favorite_path(t), method: :delete %> <%= t.favorites.count %>
-    <% else %>
-      <%= button_to 'いいね', add_to_favorites_path(t), method: :post %> <%= t.favorites.count %>
-    <% end %>
+    <strong><%= timeline.user.name %></strong> <%= timeline.user.beebits_name %>
   </div>
-<% end %>
+  <div>
+    <%= timeline.content %>
+  </div>
+  <% if current_user == timeline.user %>
+    <%= button_to "削除", timeline_path(timeline), method: :delete, data: { confirm: '本当に削除しますか?' } %>
+  <% end %>
+  <% if current_user.favorited_by?(timeline.id) %>
+    <%= button_to 'いいねを外す', destroy_favorite_path(timeline), method: :delete %> <%= timeline.favorites.count %>
+  <% else %>
+    <%= button_to 'いいね', add_to_favorites_path(timeline), method: :post %> <%= timeline.favorites.count %>
+  <% end %>
+</div>
