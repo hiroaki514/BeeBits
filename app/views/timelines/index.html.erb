@@ -4,7 +4,6 @@
 <p>あなたのID名は <%= current_user.beebits_name %></p>
 <%= link_to '自分のプロフィール', user_profile_path(current_user) %>
 
-
 <div>
   <%= form_with(model: @timeline, url: timelines_path, local: true) do |form| %>
     <div>
@@ -25,6 +24,8 @@
   <% end %>
 </div>
 
-<%= render 'timelines/timeline' %>
+<% @timelines.each do |timeline| %>
+  <%= render 'timelines/timeline', timeline: timeline %>
+<% end %>
 
 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>
