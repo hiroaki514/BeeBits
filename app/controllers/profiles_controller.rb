@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProfilesController < ApplicationController
-  before_action :set_user
+  before_action :set_user, only: %i[show edit update]
 
   def show
     @timelines = @user.timelines.order(created_at: :desc)
@@ -13,8 +13,10 @@ class ProfilesController < ApplicationController
     # パスワードのバリデーションをスキップするフラグを設定
     @user.skip_password_validation = true
     if @user.update(profile_params)
+      Rails.logger.debug 'User update successful'
       redirect_to user_profile_path(@user), notice: 'プロフィールが更新されました。'
     else
+      Rails.logger.debug { "User update failed: #{@user.errors.full_messages.join(', ')}" }
       render :edit
     end
   end
