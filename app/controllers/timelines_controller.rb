@@ -1,37 +1,33 @@
 # frozen_string_literal: true
 
-class TimelinesController < ApplicationController
-  def index
-    @timelines = Timeline.order(created_at: :desc) || []
+class ProfilesController < ApplicationController
+  before_action :set_user
+
+  def show
+    @timelines = @user.timelines.order(created_at: :desc)
   end
 
-  def new
-    @timeline = Timeline.new
-  end
+  def edit; end
 
-  def create
-    @timeline = Timeline.new(timeline_params)
-    @timeline.user = current_user
-    if @timeline.save
-      redirect_to timelines_path, notice: '投稿が送信されました'
+  def update
+    # パスワードのバリデーションをスキップするフラグを設定
+    @user.skip_password_validation = true
+    if @user.update(profile_params)
+      redirect_to user_profile_path(@user), notice: 'プロフィールが更新されました。'
     else
-      redirect_to timelines_path, alert: '投稿に失敗しました'
-    end
-  end
-
-  def destroy
-    timeline = Timeline.find(params[:id])
-    if timeline.user == current_user
-      timeline.destroy
-      redirect_to timelines_path, notice: '投稿が削除されました'
-    else
-      redirect_to timelines_path, alert: '投稿の削除に失敗しました'
+      render :edit
     end
   end
 
   private
 
-  def timeline_params
-    params.permit(:body, :user_id, :content)
+  # ユーザーをセットするメソッド
+  def set_user
+    @user = User.find(params[:user_id])
+  end
+
+  # プロフィールのパラメータを許可するメソッド
+  def profile_params
+    params.require(:user).permit(:name, :bio)
   end
 end
