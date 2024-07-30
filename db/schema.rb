@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_605_112_316) do
+ActiveRecord::Schema[7.1].define(version: 20_240_728_164_514) do
   create_table 'favorites', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
     t.integer 'user_id'
     t.integer 'timeline_id'
@@ -47,6 +47,7 @@ ActiveRecord::Schema[7.1].define(version: 20_240_605_112_316) do
     t.string 'phone_number', comment: '電話番号'
     t.date 'birthdate', null: false, comment: '生年月日'
     t.string 'beebits_name', collation: 'utf8mb4_bin'
+    t.text 'bio', comment: '自己紹介'
     t.index ['beebits_name'], name: 'index_users_on_beebits_name', unique: true
     t.index ['email'], name: 'index_users_on_email', unique: true
     t.index ['reset_password_token'], name: 'index_users_on_reset_password_token', unique: true
