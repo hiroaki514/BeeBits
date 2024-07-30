@@ -56,6 +56,12 @@ RSpec.describe 'Profiles', type: :system do
         click_on other_user.name
         expect(page).to have_content('これは別のサンプルの自己紹介テキストです。')
       end
+
+      it '他者のプロフィール画面に編集ボタンが表示されないこと' do
+        visit timelines_path
+        click_on other_user.name
+        expect(page).not_to have_link('プロフィールを編集', href: edit_user_profile_path(other_user))
+      end
     end
   end
 end
