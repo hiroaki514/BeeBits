@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Profiles', type: :system do
   describe 'プロフィール画面' do
     let(:user) { create(:user, bio: 'これはサンプルの自己紹介テキストです。') }
-    let(:other_user) { create(:user, :dummy_user) }
+    let(:other_user) { create(:user, :dummy_user, bio: 'これは別のサンプルの自己紹介テキストです。') }
     let!(:user_post) { create(:timeline, user:, content: '自分の投稿') }
     let!(:other_user_post) { create(:timeline, user: other_user, content: '他者の投稿') }
 
@@ -44,24 +44,18 @@ RSpec.describe 'Profiles', type: :system do
     end
 
     context '他者のプロフィール画面の場合' do
-      before do
-        visit destroy_user_session_path
-        visit new_user_session_path
-        fill_in 'BeeBitsユーザー名', with: other_user.beebits_name
-        fill_in 'パスワード', with: other_user.password
-        click_on 'ログイン'
+      it '他者の投稿のみが表示されること' do
+        visit timelines_path
+        click_on other_user.name
+        expect(page).to have_content('他者の投稿')
+        expect(page).not_to have_content('自分の投稿')
       end
 
-      # it '他者の投稿のみが表示されること' do
-      #   visit user_profile_path(user)
-      #   expect(page).to have_content('他者の投稿')
-      #   expect(page).not_to have_content('自分の投稿')
-      # end
-
-      # it '他者の自己紹介テキストが表示されること' do
-      #   visit user_profile_path(user)
-      #   expect(page).to have_content('これはサンプルの自己紹介テキストです。')
-      # end
+      it '他者の自己紹介テキストが表示されること' do
+        visit timelines_path
+        click_on other_user.name
+        expect(page).to have_content('これは別のサンプルの自己紹介テキストです。')
+      end
     end
   end
 end

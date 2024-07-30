@@ -1,6 +1,6 @@
 <div>
   <div>
-    <strong><%= timeline.user.name %></strong> <%= timeline.user.beebits_name %>
+    <strong><%= link_to timeline.user.name, user_profile_path(timeline.user) %></strong> <%= timeline.user.beebits_name %>
   </div>
   <div>
     <%= timeline.content %>
