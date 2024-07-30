@@ -5,7 +5,7 @@
   <%= link_to 'プロフィールを編集', edit_user_profile_path(@user) %>
 </div>
 
-<div>
+<div class="user-posts">
   <% @timelines.each do |timeline| %>
     <%= render 'timelines/timeline', timeline: timeline %>
   <% end %>
