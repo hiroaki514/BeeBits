@@ -54,3 +54,6 @@
 
 # development_materialsディレクトリを無視
 /development_materials/*
+
+# MEMOファイルを無視
+/MEMO.txt
