@@ -41,6 +41,11 @@ RSpec.describe 'Profiles', type: :system do
         click_on '更新'
         expect(page).to have_content('自己紹介 は160文字以内で入力してください')
       end
+
+      it '登録日が表示されること' do
+        visit user_profile_path(user)
+        expect(page).to have_content(user.created_at.strftime('%Y年%-m月からBeeBitsを利用しています').to_s)
+      end
     end
 
     context '他者のプロフィール画面の場合' do
@@ -61,6 +66,12 @@ RSpec.describe 'Profiles', type: :system do
         visit timelines_path
         click_on other_user.name
         expect(page).not_to have_link('プロフィールを編集', href: edit_user_profile_path(other_user))
+      end
+
+      it '他者の登録日が表示されること' do
+        visit timelines_path
+        click_on other_user.name
+        expect(page).to have_content(other_user.created_at.strftime('%Y年%-m月からBeeBitsを利用しています').to_s)
       end
     end
   end
