@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   }
   root 'timelines#index'
   resources :timelines
+  resources :users, only: [:show] do
+    resource :profile, only: %i[show edit update], controller: 'profiles'
+  end
   post 'favorites/:id', to: 'favorites#create', as: 'add_to_favorites'
   delete 'favorites/:id', to: 'favorites#destroy', as: 'destroy_favorite'
   resources :reserve_post_timelines, only: [:create]
