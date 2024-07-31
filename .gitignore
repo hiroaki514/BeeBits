@@ -57,3 +57,23 @@
 
 # MEMOファイルを無視
 /MEMO.txt
+
+# 機密ファイルを無視
+.env
+*.pem
+*.key
+
+# IDE/エディタの設定ファイルを無視
+.vscode/
+*.code-workspace
+
+# ビルド成果物を無視
+/public/packs
+
+# 一時ファイルを無視
+*.swp
+*~
+.DS_Store
+
+# 依存関係のディレクトリを無視
+/vendor/bundle
