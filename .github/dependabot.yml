@@ -1,7 +1,7 @@
-# Dependabot version updates configuration
+# Dependabotのバージョン更新設定
 version: 2
 
-# Update settings for Bundler
+# Bundlerの更新設定
 updates:
   - package-ecosystem: "bundler"  # パッケージエコシステム: Bundler
     directory: "/"                # マニフェストが存在するディレクトリ
@@ -9,6 +9,10 @@ updates:
       interval: "weekly"           # 更新の頻度: 週次
       day: "monday"                # 更新の曜日: 月曜日
       time: "10:00"                # 更新の時間: 10:00
+
+    # ラベルの設定
+    labels:
+      - "dependabotによる更新"
 
     # オプション設定
     automerge: false
