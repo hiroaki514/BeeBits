@@ -1,4 +1,7 @@
+# config/locales/ja.yml
 ja:
+  profiles:
+    using_since: "%{year}年%{month}月からBeeBitsを利用しています"
   activerecord:
     errors:
       messages:
