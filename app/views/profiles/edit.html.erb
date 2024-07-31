@@ -1,6 +1,16 @@
 <h1>プロフィール編集</h1>
 
 <%= form_with(model: @user, url: user_profile_path(@user), method: :put, local: true) do |form| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "エラー") %>が発生しました:</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
   <div>
     <%= form.label :name, '名前' %>
     <%= form.text_field :name %>
