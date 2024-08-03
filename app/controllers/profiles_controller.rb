@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class ProfilesController < ApplicationController
-  before_action :set_user
   before_action :authenticate_user!, only: %i[edit update]
-  before_action :authorize_user!, only: %i[edit update]
+  before_action :set_user
 
   def show
     @timelines = @user.timelines.order(created_at: :desc)
@@ -31,10 +30,5 @@ class ProfilesController < ApplicationController
   # プロフィールのパラメータを許可するメソッド
   def profile_params
     params.require(:user).permit(:name, :bio)
-  end
-
-  # 編集権限を確認するメソッド
-  def authorize_user!
-    redirect_to root_path, alert: '権限がありません。' unless @user == current_user
   end
 end
