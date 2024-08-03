@@ -1,7 +1,7 @@
-# Dependabot version updates configuration
+# Dependabotのバージョン更新設定
 version: 2
 
-# Update settings for Bundler
+# Bundlerの更新設定
 updates:
   - package-ecosystem: "bundler"  # パッケージエコシステム: Bundler
     directory: "/"                # マニフェストが存在するディレクトリ
@@ -10,29 +10,6 @@ updates:
       day: "monday"                # 更新の曜日: 月曜日
       time: "10:00"                # 更新の時間: 10:00
 
-    # オプション設定
-    automerge: false
-    delete_merged_branch_on_merge: false
-    close_old_pull_requests: false
-    reopen_closed: true
-    skip_prs_with_labels:
-      - "do not merge"
-    commit_message_options:
-      merge: "Rebase and merge if necessary"
-      merge_fallback: "Rebase and merge if necessary"
-      squash: "Rebase and merge if necessary"
-      squash_fallback: "Rebase and merge if necessary"
-      closed: "Rebase and merge if necessary. このプルリクエストはDependabotによって変更が取り消されたか、古くなったために自動的にクローズされました。"
-    outdated:
-      close_pr: true
-      close_issue: true
-      comments:
-        - content: >
-            このブランチは古くなり、Dependabotによって自動的にクローズおよび削除されました。
-    pull_request_rules:
-      - label: "invalid"
-        actions:
-          - close
-          - comment:
-              content: >
-                このプルリクエストはDependabotによって取り消されました。自動的にクローズおよび削除されます。
+    # ラベルの設定
+    labels:
+      - "dependabotによる更新"

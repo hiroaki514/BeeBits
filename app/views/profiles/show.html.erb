@@ -1,0 +1,17 @@
+<div>
+  <h1><%= @user.name %></h1>
+  <p><%= @user.beebits_name %></p>
+  <p><%= @user.bio %></p>
+  <p><%= t('profiles.using_since', year: @user.created_at.year, month: @user.created_at.month) %></p>
+  <% if @user == current_user %>
+    <%= link_to 'プロフィールを編集', edit_user_profile_path(@user) %>
+  <% end %>
+</div>
+
+<div class="user-posts">
+  <% @timelines.each do |timeline| %>
+    <%= render 'timelines/timeline', timeline: timeline %>
+  <% end %>
+</div>
+
+<%= link_to 'タイムラインへ戻る', timelines_path %>

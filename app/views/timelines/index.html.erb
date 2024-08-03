@@ -2,6 +2,7 @@
 
 <p>Welcome, <%= current_user.name %>!</p>
 <p>あなたのID名は <%= current_user.beebits_name %></p>
+<%= link_to '自分のプロフィール', user_profile_path(current_user) %>
 
 <div>
   <%= form_with(model: @timeline, url: timelines_path, local: true) do |form| %>
@@ -13,19 +14,8 @@
   <% end %>
 </div>
 
-<% @timelines.each do |t| %>
-  <div>
-    <p><strong><%= t.user.beebits_name %></strong>: <%= t.content %></p>
-    <% if current_user == t.user %>
-      <%= button_to "削除", timeline_path(t), method: :delete, data: { confirm: '本当に削除しますか?' } %>
-    <% end %>
-    <% if current_user.favorited_by?(t.id) %>
-      <%= button_to 'いいねを外す', destroy_favorite_path(t), method: :delete %> <%= t.favorites.count %>
-    <% else %>
-      <%= button_to 'いいね', add_to_favorites_path(t), method: :post %> <%= t.favorites.count %>
-    <% end %>
-  </div>
+<% @timelines.each do |timeline| %>
+  <%= render 'timelines/timeline', timeline: timeline %>
 <% end %>
-
 
 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' } %>

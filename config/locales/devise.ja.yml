@@ -1,4 +1,7 @@
+# config/locales/ja.yml
 ja:
+  profiles:
+    using_since: "%{year}年%{month}月からBeeBitsを利用しています"
   activerecord:
     errors:
       messages:
@@ -22,6 +25,8 @@ ja:
               too_long: "は%{count}文字以内で入力してください"
             password_confirmation:
               confirmation: "が一致しません"
+            bio:
+              too_long: "は%{count}文字以内で入力してください"
     attributes:
       user:
         name: "名前"
@@ -29,6 +34,7 @@ ja:
         phone_number: "電話番号"
         birthdate: "生年月日"
         beebits_name: "BeeBitsユーザー名"
+        bio: "自己紹介"
         confirmation_sent_at: パスワード確認送信時刻
         confirmation_token: パスワード確認用トークン
         confirmed_at: パスワード確認時刻

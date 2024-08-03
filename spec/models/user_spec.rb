@@ -6,7 +6,6 @@ RSpec.describe User, type: :model do
   describe '#validation' do
     context '名前の場合' do
       let(:user) { build(:user, name:) }
-      # let(:user) {build(:user, name: name) }
 
       context '空の場合' do
         let(:name) { nil }
@@ -36,7 +35,8 @@ RSpec.describe User, type: :model do
 
       context '3文字の場合' do
         let(:name) { '蜜蜂太' }
-        it 'エラーが表示されること' do
+
+        it 'エラーが表示されないこと' do
           expect(user).to be_valid
         end
       end
@@ -137,15 +137,6 @@ RSpec.describe User, type: :model do
     context '電話番号の場合' do
       let(:user) { build(:user, phone_number:) }
 
-      # context '空の場合' do
-      #   let(:phone_number) { nil }
-
-      #   it 'エラーが表示されること' do
-      #     user.valid?
-      #     expect(user.errors.full_messages).to include('')
-      #   end
-      # end
-
       context '形式が日本国内の電話番号以外の場合' do
         let(:phone_number) { '01012345678' }
 
@@ -198,7 +189,7 @@ RSpec.describe User, type: :model do
       context '15歳の場合' do
         let(:birthdate) { 15.years.ago.strftime('%Y-%m-%d') }
 
-        it 'エラーが表示されること' do
+        it 'エラーが表示されないこと' do
           expect(user).to be_valid
         end
       end
@@ -206,7 +197,7 @@ RSpec.describe User, type: :model do
       context '16歳の場合' do
         let(:birthdate) { 16.years.ago.strftime('%Y-%m-%d') }
 
-        it 'エラーが表示されること' do
+        it 'エラーが表示されないこと' do
           expect(user).to be_valid
         end
       end
@@ -354,7 +345,7 @@ RSpec.describe User, type: :model do
         let(:password) { "#{'a' * 120}123456789" }
         let(:password_confirmation) { "#{'a' * 120}123456789" }
 
-        it 'エラーが表示さること' do
+        it 'エラーが表示されること' do
           user.valid?
           expect(user.errors.full_messages).to include('パスワード は128文字以内で入力してください')
         end
@@ -370,6 +361,35 @@ RSpec.describe User, type: :model do
         it 'エラーが表示されること' do
           user.valid?
           expect(user.errors.full_messages).to include('パスワード(確認用) が一致しません')
+        end
+      end
+    end
+
+    context '自己紹介テキストの場合' do
+      let(:user) { build(:user, bio:) }
+
+      context '空の場合' do
+        let(:bio) { nil }
+
+        it 'エラーが表示されないこと' do
+          expect(user).to be_valid
+        end
+      end
+
+      context '160文字の場合' do
+        let(:bio) { 'a' * 160 }
+
+        it 'エラーが表示されないこと' do
+          expect(user).to be_valid
+        end
+      end
+
+      context '161文字の場合' do
+        let(:bio) { 'a' * 161 }
+
+        it 'エラーが表示されること' do
+          user.valid?
+          expect(user.errors.full_messages).to include('自己紹介 は160文字以内で入力してください')
         end
       end
     end
