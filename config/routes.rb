@@ -6,7 +6,10 @@ Rails.application.routes.draw do
     registrations: 'users/registrations',
     sessions: 'users/sessions'
   }
-  root 'timelines#index'
+
+  root to: 'front#index'
+  get '*path', to: 'front#index'
+
   resources :timelines
   resources :users, only: [:show] do
     resource :profile, only: %i[show edit update], controller: 'profiles'
