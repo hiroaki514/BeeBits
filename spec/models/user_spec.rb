@@ -88,6 +88,23 @@ RSpec.describe User, type: :model do
         end
       end
 
+      context '有効な形式の場合' do
+        let(:email) { 'valid.email@example.com' }
+
+        it 'エラーが表示されないこと' do
+          expect(user).to be_valid
+        end
+      end
+
+      context 'ドメイン部分が無効な形式の場合' do
+        let(:email) { 'email@invalid_domain' }
+
+        it 'エラーが表示されること' do
+          user.valid?
+          expect(user.errors.full_messages).to include('メールアドレス は有効な形式で入力してください')
+        end
+      end
+
       context '大文字小文字を区別せずに、重複する場合' do
         let(:email) { 'BeeBits@example.com' }
 
