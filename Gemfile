@@ -35,6 +35,7 @@ group :development do
   gem 'pry-byebug'
   gem 'pry-nav'
   gem 'pry-rails'
+  gem 'rails-erd'
   gem 'web-console'
 end
 
