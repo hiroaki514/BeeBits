@@ -84,7 +84,7 @@ GEM
     bcrypt (3.1.20)
     bigdecimal (3.1.8)
     bindex (0.8.1)
-    bootsnap (1.18.3)
+    bootsnap (1.18.4)
       msgpack (~> 1.2)
     bootstrap (5.3.3)
       autoprefixer-rails (>= 9.1.0)
@@ -100,6 +100,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    choice (0.2.0)
     chronic (0.10.2)
     coderay (1.1.3)
     concurrent-ruby (1.3.3)
@@ -230,6 +231,11 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
+    rails-erd (1.7.2)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
+      choice (~> 0.2.0)
+      ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
@@ -291,6 +297,8 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
+    ruby-graphviz (1.2.5)
+      rexml
     ruby-progressbar (1.13.0)
     rubyzip (2.3.2)
     sassc (2.4.0)
@@ -376,6 +384,7 @@ DEPENDENCIES
   pry-rails
   puma (~> 6.4)
   rails (~> 7.1.3)
+  rails-erd
   rspec-rails (~> 6.1.3)
   rubocop
   rubocop-performance

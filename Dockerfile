@@ -1,6 +1,6 @@
 FROM ruby:3.2.2-alpine3.18
 
-# Install dependencies
+# 依存関係のインストール
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
@@ -15,29 +15,30 @@ RUN apk update && \
         bash \
         mysql-dev \
         chromium \
-        chromium-chromedriver && \
+        chromium-chromedriver \
+        graphviz && \
     apk add --no-cache -t .build-packages \
         build-base \
         curl-dev \
         mysql-client
 
-# Set working directory
+# 作業ディレクトリの設定
 WORKDIR /app
 
-# Copy Gemfile and Gemfile.lock
+# GemfileとGemfile.lockをコピー
 COPY Gemfile Gemfile.lock ./
 
-# Install Bundler and dependencies
+# Bundlerと依存関係のインストール
 RUN gem install bundler && \
     bundle install
 
-# Copy entrypoint script
+# エントリポイントスクリプトをコピー
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 
-# Expose port
+# ポートを公開
 EXPOSE 3000
 
-# Set entrypoint and default command
+# エントリポイントとデフォルトコマンドの設定
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["rails", "server", "-b", "0.0.0.0"]
