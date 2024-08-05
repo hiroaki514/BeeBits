@@ -13,10 +13,12 @@ class User < ApplicationRecord
                              message: 'は日本の携帯電話番号の形式で入力してください'
                            },
                            allow_blank: true
+
   validates :email, uniqueness: true,
-                    format: { with: /\A[^@\s]+@[^@\s]+\z/,
+                    format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\z/,
                               message: 'は有効な形式で入力してください' },
                     length: { maximum: 254 }
+
   validates :birthdate, presence: true
 
   validates :password, length: { minimum: 8, maximum: 128 },
