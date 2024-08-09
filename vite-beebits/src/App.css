@@ -40,3 +40,11 @@
 .read-the-docs {
   color: #888;
 }
+
+/* TestPage用のスタイル */
+.test-page {
+  margin-top: 20px;
+  padding: 10px;
+  color: #6bbdd8;
+  border-radius: 5px;
+}
