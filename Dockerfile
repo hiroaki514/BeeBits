@@ -32,12 +32,17 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && \
     bundle install
 
+# ルート直下のpackage.jsonを使用して依存関係をインストール
+COPY package.json package-lock.json ./
+RUN npm install
+
 # エントリポイントスクリプトをコピー
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 
 # ポートを公開
 EXPOSE 3000
+EXPOSE 5173
 
 # エントリポイントとデフォルトコマンドの設定
 ENTRYPOINT ["entrypoint.sh"]
