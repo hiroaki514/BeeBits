@@ -25,14 +25,14 @@ services:
   frontend:
     build: ./frontend
     command: npm run dev
+    volumes:
+      - ./frontend:/app/frontend
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/app
     depends_on:
       - web
-    tty: true
-    stdin_open: true
+    environment:
+      NODE_ENV: development
 
 volumes:
   db:
