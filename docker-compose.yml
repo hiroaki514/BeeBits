@@ -22,17 +22,5 @@ services:
     tty: true
     stdin_open: true
 
-  frontend:
-    build: ./frontend
-    command: npm run dev
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-    depends_on:
-      - web
-    tty: true
-    stdin_open: true
-
 volumes:
   db:
