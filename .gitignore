@@ -1,7 +1,30 @@
-# 詳細は https://help.github.com/articles/ignoring-files を参照
-# テキストエディタやOSによって生成される一時ファイルを無視したい場合、
-# グローバルなignoreファイルを追加することを検討してください：
-#   git config --global core.excludesfile '~/.gitignore_global'
+# ログファイルを無視
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# node_modulesディレクトリを無視
+/node_modules/
+
+# distディレクトリを無視
+/frontend/dist
+/frontend/dist-ssr
+*.local
+
+# テキストエディタやIDEの設定ファイルを無視
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # bundlerの設定ファイルを無視
 /.bundle
@@ -49,9 +72,6 @@
 # サーバーPIDファイルを無視
 /tmp/pids/server.pid
 
-# node_modulesディレクトリを無視
-/node_modules/
-
 # development_materialsディレクトリを無視
 /development_materials/*
 
@@ -62,10 +82,6 @@
 .env
 *.pem
 *.key
-
-# IDE/エディタの設定ファイルを無視
-.vscode/
-*.code-workspace
 
 # ビルド成果物を無視
 /public/packs
