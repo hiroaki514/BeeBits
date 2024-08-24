@@ -1,50 +1,52 @@
+# ベースイメージ
 FROM ruby:3.2.2-alpine3.18
 
-# 依存関係のインストール
+# 必要なパッケージをインストール
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
+        build-base \
         linux-headers \
         libxml2-dev \
-        make \
-        gcc \
-        libc-dev \
+        curl-dev \
+        mysql-client \
+        mysql-dev \
         nodejs \
         npm \
         tzdata \
         bash \
-        mysql-dev \
         chromium \
         chromium-chromedriver \
-        graphviz && \
-    apk add --no-cache -t .build-packages \
-        build-base \
-        curl-dev \
-        mysql-client
+        graphviz
 
-# 作業ディレクトリの設定
+# 作業ディレクトリを設定
 WORKDIR /app
 
-# GemfileとGemfile.lockをコピー
+# Bundlerのインストール
+RUN gem install bundler
+
+# バックエンドの依存関係をインストール
 COPY Gemfile Gemfile.lock ./
+RUN bundle install
 
-# Bundlerと依存関係のインストール
-RUN gem install bundler && \
-    bundle install
+# フロントエンドの依存関係をインストール
+COPY frontend/package.json frontend/package-lock.json ./frontend/
+WORKDIR /app/frontend
+RUN npm install
 
-# アプリケーション全体のソースコードをコピー
+# アプリケーションのソースコードをコピー
 WORKDIR /app
 COPY . .
 
 # ポートを公開
-EXPOSE 3000
+EXPOSE 3000 5173
 
-# エントリポイントスクリプトをコピー
+# エントリポイントスクリプトをコピーして実行権限を付与
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 
-# エントリポイントとデフォルトコマンドの設定
+# エントリポイントを設定
 ENTRYPOINT ["entrypoint.sh"]
 
-# フロントエンドの開発サーバーとRailsサーバーを同時に起動
-CMD ["sh", "-c", "cd frontend && npm run dev & rails server -b 0.0.0.0"]
+# デフォルトのコマンドを設定
+CMD ["sh", "-c", "cd frontend && npm run dev -- --host 0.0.0.0 & rails server -b 0.0.0.0"]
