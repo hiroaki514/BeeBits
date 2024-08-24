@@ -32,18 +32,12 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && \
     bundle install
 
-# ルート直下のpackage.jsonを使用して依存関係をインストール
-WORKDIR /app/frontend
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
-
 # アプリケーション全体のソースコードをコピー
-WORKDIR /app  
+WORKDIR /app
 COPY . .
 
 # ポートを公開
 EXPOSE 3000
-EXPOSE 5173
 
 # エントリポイントスクリプトをコピー
 COPY entrypoint.sh /usr/bin/
@@ -53,4 +47,4 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
 # フロントエンドの開発サーバーとRailsサーバーを同時に起動
-CMD ["sh", "-c", "rails server -b 0.0.0.0 & npm run dev --prefix frontend"]
+CMD ["sh", "-c", "cd frontend && npm run dev & rails server -b 0.0.0.0"]
