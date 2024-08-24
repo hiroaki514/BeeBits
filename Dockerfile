@@ -33,10 +33,12 @@ RUN gem install bundler && \
     bundle install
 
 # ルート直下のpackage.jsonを使用して依存関係をインストール
-COPY package.json package-lock.json ./
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
 
 # アプリケーション全体のソースコードをコピー
+WORKDIR /app  
 COPY . .
 
 # ポートを公開
