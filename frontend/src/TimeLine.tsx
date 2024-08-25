@@ -1,10 +1,16 @@
 import { useState } from 'react'
+import styled from 'styled-components'
+
+const StyledParagraph = styled.p`
+  color: blue;
+  font-size: 20px;
+`;
 
 function TimeLine() {
 
   return (
     <>
-      <p>Timelines#index</p>
+      <StyledParagraph>Timelines#index</StyledParagraph>
     </>
   )
 }
