@@ -11,7 +11,7 @@ const TimeLine: React.FC = () => {
 
   useEffect(() => {
     axios.get('/timelines').then((response) => {
-      setTimelines(response.data.timelines);
+      setTimelines(response.data.timelines || []);
     });
   }, []);
 
