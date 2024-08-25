@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // React RouterのLinkコンポーネントをインポート
 
 const StyledDiv = styled.div`
   margin: 20px;
@@ -17,7 +18,8 @@ const TimeLine: React.FC = () => {
 
   return (
     <StyledDiv>
-      <a href={`/users/profile`}>自分のプロフィール</a>
+      {/* Linkコンポーネントを使用してReact Routerでページ遷移 */}
+      <Link to="/profiles/1">自分のプロフィール</Link> {/* ユーザーIDを適切に設定してください */}
 
       <form action="/timelines" method="post">
         <div>
