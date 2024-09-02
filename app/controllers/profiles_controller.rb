@@ -5,16 +5,7 @@ class ProfilesController < ApplicationController
   before_action :set_user
 
   def show
-    timelines = @user.timelines.order(created_at: :desc)
-    render json: {
-      user: {
-        name: @user.name,
-        beebits_name: @user.beebits_name,
-        bio: @user.bio,
-        created_at: @user.created_at
-      },
-      timelines: timelines.as_json(only: [:id, :content, :created_at])
-    }
+    @timelines = @user.timelines.order(created_at: :desc)
   end
 
   def edit; end
