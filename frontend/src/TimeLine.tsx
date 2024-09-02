@@ -9,7 +9,7 @@ const TimeLine: React.FC = () => {
 
   <>
   </>
-  
+
 };
 
 export default TimeLine;
