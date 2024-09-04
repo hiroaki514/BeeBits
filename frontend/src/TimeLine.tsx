@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: #add8e6;
   border-radius: 8px;
 `;
 
 const Header = styled.h1`
-  font-size: 24px;
+  font-size: 28px;
   color: #333;
 `;
 
