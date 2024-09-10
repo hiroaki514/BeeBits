@@ -1,18 +1,24 @@
-import { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
-const StyledParagraph = styled.p`
-  color: blue;
-  font-size: 20px;
+const Container = styled.div`
+  padding: 20px;
+  background-color: #add8e6;
+  border-radius: 8px;
 `;
 
-function TimeLine() {
+const Header = styled.h1`
+  font-size: 28px;
+  color: #333;
+`;
 
+const TimeLine: React.FC = () => {
   return (
-    <>
-      <StyledParagraph>Timelines#index</StyledParagraph>
-    </>
-  )
-}
+    <Container>
+      <Header>タイムライン</Header>
+      <p>ここにタイムラインのコンテンツが表示されます。</p>
+    </Container>
+  );
+};
 
-export default TimeLine
+export default TimeLine;
