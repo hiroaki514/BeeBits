@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TimelinesController < ApplicationController
+class Api::TimelinesController < Api::ApplicationController
   def index
     @timelines = Timeline.order(created_at: :desc) || []
   end
