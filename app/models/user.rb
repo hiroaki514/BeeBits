@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  attr_accessor :skip_password_validation
 
   devise  :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
@@ -21,10 +20,10 @@ class User < ApplicationRecord
 
   validates :birthdate, presence: true
 
+  validates :password, presence: true # 空を許容しない
+
   validates :password, length: { minimum: 8, maximum: 128 },
-                       format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/,
-                                 message: 'は英数字の組み合わせで8文字以上で入力してください' },
-                       allow_nil: true, unless: -> { skip_password_validation }
+                       format: { with: /\A(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+\z/}
 
   validates :beebits_name, presence: true,
                            uniqueness: { case_sensitive: false, on: :create },
