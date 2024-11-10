@@ -23,6 +23,7 @@ ja:
             password:
               too_short: "は%{count}文字以上で入力してください"
               too_long: "は%{count}文字以内で入力してください"
+              invalid: "無効なパスワードです"
             password_confirmation:
               confirmation: "が一致しません"
             bio:
