@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
 
         it 'エラーが表示されること' do
           user.valid?
-          expect(user.errors.full_messages).to include('名前 は2文字以上で入力してください')
+          expect(user.errors.full_messages).to include('名前 は2文字以上50文字以内で入力してください')
         end
       end
 
@@ -62,7 +62,7 @@ RSpec.describe User, type: :model do
 
         it 'エラーが表示されること' do
           user.valid?
-          expect(user.errors.full_messages).to include('名前 は50文字以内で入力してください')
+          expect(user.errors.full_messages).to include('名前 は2文字以上50文字以内で入力してください')
         end
       end
     end
@@ -257,7 +257,7 @@ RSpec.describe User, type: :model do
 
         it 'エラーが表示されること' do
           user.valid?
-          expect(user.errors.full_messages).to include('BeeBitsユーザー名 はすでに存在しています')
+          expect(user.errors.full_messages).to include('BeeBitsユーザー名 はすでに存在します')
         end
       end
 
@@ -282,7 +282,7 @@ RSpec.describe User, type: :model do
 
         it 'エラーが表示されること' do
           user.valid?
-          expect(user.errors.full_messages).to include('BeeBitsユーザー名 は@を含め15文字以内で入力してください')
+          expect(user.errors.full_messages).to include('BeeBitsユーザー名 は15文字以内で入力してください')
         end
       end
 
@@ -336,7 +336,7 @@ RSpec.describe User, type: :model do
 
         it 'エラーが表示されること' do
           user.valid?
-          expect(user.errors.full_messages).to include('パスワード は英数字の組み合わせで8文字以上で入力してください')
+          expect(user.errors.full_messages).to include('パスワード の形式が間違っています')
         end
       end
 
