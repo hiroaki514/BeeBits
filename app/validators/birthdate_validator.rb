@@ -3,7 +3,7 @@
 class BirthdateValidator < ActiveModel::Validator
   def validate(record)
     if record.birthdate.blank?
-      record.errors.add(:birthdate, "生年月日を入力してください")
+      record.errors.add(:birthdate, "を入力してください")
     elsif record.birthdate > Date.current || record.birthdate < 150.years.ago.to_date
       record.errors.add(:birthdate, "の入力が正しくありません")
     elsif record.birthdate > 15.years.ago.to_date

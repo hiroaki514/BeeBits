@@ -3,7 +3,7 @@
 class BeebitsNameValidator < ActiveModel::Validator
   def validate(record)
     if record.beebits_name.blank?
-      record.errors.add(:beebits_name, "ユーザー名を入力してください")
+      record.errors.add(:beebits_name, "を入力してください")
     elsif record.beebits_name !~ /\A@[\w]+\z/
       record.errors.add(:beebits_name, "は英数字とアンダーバー(_)のみが使用できます")
     elsif record.beebits_name.length > 15

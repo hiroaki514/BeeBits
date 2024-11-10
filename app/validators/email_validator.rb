@@ -3,7 +3,7 @@
 class EmailValidator < ActiveModel::Validator
   def validate(record)
     if record.email.blank?
-      record.errors.add(:email, "メールを入力してください")
+      record.errors.add(:email, "を入力してください")
     elsif record.email !~ /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\z/
       record.errors.add(:email, "は有効な形式で入力してください")
     elsif record.email.length > 254
