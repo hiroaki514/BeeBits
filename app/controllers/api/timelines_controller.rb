@@ -3,8 +3,6 @@
 class Api::TimelinesController < Api::ApplicationController
   def index
     @timelines = Timeline.order(created_at: :desc) || []
-
-    render json: @timelines.to_json
   end
 
   def new
