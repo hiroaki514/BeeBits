@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'admin/users#index'
-
   # Devise 認証用のルート
   devise_for :users, controllers: {
     registrations: 'users/registrations',
@@ -17,5 +15,8 @@ Rails.application.routes.draw do
 
     post 'favorites/:id', to: 'favorites#create', as: 'add_to_favorites'
     delete 'favorites/:id', to: 'favorites#destroy', as: 'destroy_favorite'
+
+    # ログイン状態確認API
+    resource :session, only: [:show]
   end
 end
