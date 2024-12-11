@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-
   devise  :database_authenticatable, :registerable,
           :recoverable, :rememberable, :validatable
 
@@ -37,8 +36,4 @@ class User < ApplicationRecord
   def favorited_by?(timeline_id)
     favorites.exists?(timeline_id:)
   end
-
-  private
-
-
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class Admin::UsersController < ActionController::Base
-  def index; end
-  
+module Admin
+  class UsersController < ApplicationController
+    def index; end
+  end
 end
