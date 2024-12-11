@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-
   root 'admin/users#index'
 
   # Devise 認証用のルート

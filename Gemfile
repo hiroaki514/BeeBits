@@ -11,6 +11,7 @@ gem 'devise'
 gem 'devise-i18n'
 gem 'importmap-rails'
 gem 'jbuilder'
+gem 'jsonapi-serializer'
 gem 'mysql2', '~> 0.5'
 gem 'puma', '~> 6.5'
 gem 'rails', '~> 8.0.0'
@@ -32,6 +33,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'better_errors'
   gem 'pry-byebug'
   gem 'pry-nav'
   gem 'pry-rails'
