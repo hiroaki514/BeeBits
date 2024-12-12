@@ -12,32 +12,73 @@ const Header = styled.h1`
   color: #333;
 `;
 
+const LoadingMessage = styled.p`
+  font-size: 20px;
+  color: #666;
+`;
+
 const TimeLine: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // ログイン状態を確認するAPIを呼び出し
-    fetch('http://localhost:3000/api/session', { credentials: 'include' })
+    // RailsのAPIを呼び出してログイン状態を確認
+    fetch('http://localhost:3000/api/session', {
+      credentials: 'include',
+    })
       .then((response) => response.json())
       .then((data) => {
-        if (data.logged_in) {
-          setLoggedIn(true); // ログイン済み
-        } else {
-          // 未ログインの場合、ログイン画面へリダイレクト
-          window.location.href = 'http://localhost:3000/users/sign_in';
-        }
-      })
-      .catch(() => setLoggedIn(false)); // エラー時の対応
+        setIsLoggedIn(data.logged_in);
+      });
   }, []);
 
-  if (loggedIn === null) {
-    return <div>Loading...</div>; // ロード中の表示
+  if (isLoggedIn === null) {
+    // ローディング中の表示
+    return (
+      <Container>
+        <LoadingMessage>ロード中です...</LoadingMessage>
+      </Container>
+    );
   }
+
+  if (!isLoggedIn) {
+    // 外部URLへリダイレクト
+    window.location.href = 'http://localhost:3000/users/sign_in';
+    return null;
+  }
+
+  const handleLogout = async () => {
+    try {
+      // CSRFトークンを取得
+      const csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute('content');
+
+      const response = await fetch('http://localhost:3000/users/sign_out', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken || '', // CSRFトークンをヘッダーに追加
+        },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        alert('ログアウトしました');
+        setIsLoggedIn(false); // ログアウト状態を設定
+      } else {
+        alert('ログアウトに失敗しました');
+      }
+    } catch (error) {
+      console.error('ログアウトエラー:', error);
+      alert('ログアウト中にエラーが発生しました');
+    }
+  };
 
   return (
     <Container>
       <Header>タイムライン</Header>
       <p>ここにタイムラインのコンテンツが表示されます。</p>
+      <button onClick={handleLogout}>ログアウト</button>
     </Container>
   );
 };
