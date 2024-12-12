@@ -1,6 +1,6 @@
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import TimeLine from './TimeLine';
 
 // ログイン状態を確認してリダイレクト処理を行うコンポーネント
@@ -15,6 +15,10 @@ const LoginRedirect = () => {
       .then((response) => response.json())
       .then((data) => {
         setIsLoggedIn(data.logged_in); // ログイン状態をセット
+      })
+      .catch((error) => {
+        console.error('Error fetching login status:', error);
+        setIsLoggedIn(false); // デフォルトで未ログイン扱い
       });
   }, []);
 
@@ -23,14 +27,21 @@ const LoginRedirect = () => {
   }
 
   // ログイン済みの場合はタイムラインを表示、未ログインの場合はログイン画面にリダイレクト
-  return isLoggedIn ? <TimeLine /> : <Navigate to="http://localhost:3000/users/sign_in" />;
+  return isLoggedIn ? (
+    <TimeLine />
+  ) : (
+    // 修正箇所: 外部URLへのリダイレクトにwindow.location.hrefを使用
+    (window.location.href = 'http://localhost:3000/users/sign_in')
+  );
 };
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<LoginRedirect />} /> {/* ルート画面をタイムラインに設定 */}
+        {/* 修正箇所: 明確にルートとタイムラインのパスを指定 */}
+        <Route path="/" element={<LoginRedirect />} />
+        <Route path="/timelines" element={<TimeLine />} />
       </Routes>
     </Router>
   </StrictMode>
