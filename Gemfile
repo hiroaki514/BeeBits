@@ -14,8 +14,12 @@ gem 'jbuilder'
 gem 'jsonapi-serializer'
 gem 'mysql2', '~> 0.5'
 gem 'puma', '~> 6.5'
+<<<<<<< HEAD
 gem 'rails', '~> 8.0.0'
 gem 'rack-cors'
+=======
+gem 'rails', '~> 8.0.1'
+>>>>>>> main
 gem 'sassc-rails'
 gem 'seed-fu'
 gem 'sprockets-rails'
