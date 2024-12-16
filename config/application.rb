@@ -32,5 +32,16 @@ module BeeBits
 
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local
+
+    # CORS設定
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://localhost:5173' # Reactのオリジン
+        resource '*',
+                 headers: :any,
+                 methods: [:get, :post, :put, :patch, :delete, :options, :head],
+                 credentials: true
+      end
+    end
   end
 end
