@@ -11,4 +11,9 @@ class Timeline < ApplicationRecord
               maximum: 140,
               message: 'は140文字以内で入力してください'
             }
+
+  # いいね数をカウントするメソッド
+  def favorites_count
+    favorites.count
+  end
 end
