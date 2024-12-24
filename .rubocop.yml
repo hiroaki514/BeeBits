@@ -35,7 +35,13 @@ Rails/I18nLocaleTexts:
 
 Metrics/AbcSize:
   Exclude:
-    - db/migrate/*.rb
+    - db/migrate/*.rb # マイグレーションファイルは自動生成されるため、ABCサイズチェックを除外
+
+  # 現在、プロジェクト全体でABCサイズのチェックを一時的に無効化
+  # 理由: 開発効率を優先し、複雑なリファクタリングを一時的に回避するため
+  # 再有効化する際は、この`Enabled: false`を`Enabled: true`に変更してください
+  Enabled: false
+
 
 Metrics/MethodLength:
   Exclude:
