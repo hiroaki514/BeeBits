@@ -2,7 +2,7 @@
 
 class Timeline < ApplicationRecord
   belongs_to :user
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
 
   validates :content,
             presence: true,
@@ -13,7 +13,5 @@ class Timeline < ApplicationRecord
             }
 
   # いいね数をカウントするメソッド
-  def favorites_count
-    favorites.count
-  end
+  delegate :count, to: :favorites, prefix: true
 end

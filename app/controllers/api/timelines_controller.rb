@@ -7,8 +7,8 @@ module Api
       timelines = Timeline.includes(:user, :favorites).order(created_at: :desc)
       render json: timelines.as_json(
         include: {
-          user: { only: [:id, :name, :beebits_name] },
-          favorites: { only: [:id, :user_id] }
+          user: { only: %i[id name beebits_name] },
+          favorites: { only: %i[id user_id] }
         },
         methods: [:favorites_count]
       )
