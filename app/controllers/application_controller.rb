@@ -5,8 +5,9 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   # JSONリクエストの場合、CSRFトークンを無効化
-  protect_from_forgery with: :null_session, if: -> { request.format.json? }
+  protect_from_forgery with: :exception # Web部分ではCSRF保護を有効化
   skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
+
   protected
 
   def configure_permitted_parameters

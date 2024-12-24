@@ -1,0 +1,6 @@
+node_modules
+tmp
+log
+.git
+.DS_Store
+development_materials
