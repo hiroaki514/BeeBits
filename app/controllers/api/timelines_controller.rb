@@ -1,39 +1,45 @@
 # frozen_string_literal: true
 
 module Api
-  class TimelinesController < Api::ApplicationController
+  class TimelinesController < Api::BaseController
+    # タイムラインの一覧表示
     def index
-      @timelines = Timeline.order(created_at: :desc) || []
+      timelines = Timeline.includes(:user, :favorites).order(created_at: :desc)
+      render json: timelines.as_json(
+        include: {
+          user: { only: [:id, :name, :beebits_name] },
+          favorites: { only: [:id, :user_id] }
+        },
+        methods: [:favorites_count]
+      )
     end
 
-    def new
-      @timeline = Timeline.new
-    end
-
+    # タイムラインの作成
     def create
-      @timeline = Timeline.new(timeline_params)
-      @timeline.user = current_user
-      if @timeline.save
-        redirect_to timelines_path, notice: '投稿が送信されました'
+      timeline = Timeline.new(timeline_params)
+      timeline.user = current_user
+      if timeline.save
+        render json: { message: '投稿が送信されました' }, status: :created
       else
-        redirect_to timelines_path, alert: '投稿に失敗しました'
+        render json: { error: '投稿に失敗しました' }, status: :unprocessable_entity
       end
     end
 
+    # タイムラインの削除
     def destroy
       timeline = Timeline.find(params[:id])
       if timeline.user == current_user
         timeline.destroy
-        redirect_to timelines_path, notice: '投稿が削除されました'
+        render json: { message: '投稿が削除されました' }, status: :ok
       else
-        redirect_to timelines_path, alert: '投稿の削除に失敗しました'
+        render json: { error: '削除に失敗しました' }, status: :forbidden
       end
     end
 
     private
 
     def timeline_params
-      params.permit(:body, :user_id, :content)
+      params.permit(:content)
     end
   end
 end
