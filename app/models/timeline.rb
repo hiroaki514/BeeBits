@@ -13,7 +13,5 @@ class Timeline < ApplicationRecord
             }
 
   # いいね数をカウントするメソッド
-  def favorites_count
-    favorites.count
-  end
+  delegate :count, to: :favorites, prefix: true
 end

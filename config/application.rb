@@ -39,7 +39,7 @@ module BeeBits
         origins 'http://localhost:5173' # Reactのオリジン
         resource '*',
                  headers: :any,
-                 methods: [:get, :post, :put, :patch, :delete, :options, :head],
+                 methods: %i[get post put patch delete options head],
                  credentials: true
       end
     end
