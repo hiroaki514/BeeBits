@@ -117,10 +117,10 @@ RSpec.describe 'Users', type: :system do
       end
     end
 
-    context '電話番号のみ未入力の場合' do
-      it 'エラーが表示されること' do
-      end
-    end
+    # context '電話番号のみ未入力の場合' do
+    #   it 'エラーが表示されること' do
+    #   end
+    # end
 
     context '国外の電話番号形式の場合' do
       let(:phone_number) { '17512345678' }
