@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Api
-  class SessionsController < ApplicationController
-    skip_before_action :authenticate_user!, only: [:show] # 認証をスキップ
+  class SessionsController < BaseController
+    # 認証をスキップ
+    skip_before_action :authenticate_user!, only: [:show]
 
     def show
       if current_user
@@ -11,11 +12,11 @@ module Api
           user: {
             id: current_user.id,
             email: current_user.email,
-            name: current_user.name # 必要ならば追加
+            name: current_user.name
           }
-        }
+        }, status: :ok
       else
-        render json: { logged_in: false }
+        render json: { logged_in: false }, status: :unauthorized
       end
     end
   end
