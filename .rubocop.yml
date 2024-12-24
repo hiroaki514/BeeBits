@@ -39,8 +39,14 @@ Metrics/AbcSize:
 
 Metrics/MethodLength:
   Exclude:
-    - db/migrate/*.rb
-    - 'bin/bundle'
+    - db/migrate/*.rb # マイグレーションファイルは自動生成されるため、行数チェックを除外
+    - 'bin/bundle'    # バンドルファイルもチェック対象外
+
+  # 現在はプロジェクト全体でメソッドの行数チェックを一時的に無効化
+  # 理由: 将来リファクタリングを行う前提で、開発効率を優先するため
+  # 再有効化の際は以下の`Enabled: false`を`Enabled: true`に変更
+  Enabled: false
+
 
 Metrics/BlockLength:
   Exclude:
