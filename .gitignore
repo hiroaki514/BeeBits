@@ -7,17 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# node_modulesディレクトリを無視
+# Node.js関連ディレクトリとファイルを無視
 /node_modules/
-
-# distディレクトリを無視
-/frontend/dist
-/frontend/dist-ssr
+dist
+dist-ssr
 *.local
 
 # テキストエディタやIDEの設定ファイルを無視
 .vscode/*
-!.vscode/extensions.json
+!.vscode/extensions.json # 必要な拡張機能リストは除外
 .idea
 .DS_Store
 *.suo
@@ -26,10 +24,10 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# bundlerの設定ファイルを無視
+# Bundler関連ファイルを無視
 /.bundle
 
-# ログファイル、一時ファイル、pidファイルを無視
+# ログ、一時ファイル、pidファイルを無視（必要なファイルを除外）
 /log/*
 !/log/.keep
 /log/*.log
@@ -38,55 +36,38 @@ lerna-debug.log*
 /tmp/pids/*
 !/tmp/pids/.keep
 
-# 開発環境でのアップロードファイルとストレージを無視
+# 開発環境用のアップロードファイルとストレージを無視
 /storage/*
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# publicフォルダ内のアセットファイルを無視
+# 公開用アセットのビルド成果物を無視
 /public/assets
+/public/packs
 
-# 認証情報などの復号に使用するマスターキーを無視
+# 認証情報や機密ファイルを無視
 /config/master.key
-
-# binディレクトリを無視（.keepファイルとサブディレクトリを除く）
-/bin/*
-!/bin/.keep
-!/bin/*/
-!/bin/*/.keep
+.env
+*.pem
+*.key
 
 # カバレッジレポートを無視
 /coverage
 
-# development.logのアンリンクエラーを無視
-/log/development.log
-
-# 開発用データベースを無視
+# データベースやキャッシュファイルを無視（必要なファイルを除外）
 /db/development.sqlite3
-
-# キャッシュを無視（.keepファイルを除く）
 /tmp/cache/*
 !/tmp/cache/.keep
 
 # サーバーPIDファイルを無視
 /tmp/pids/server.pid
 
-# development_materialsディレクトリを無視
+# 開発用素材や備考ファイルを無視
 /development_materials/*
-
-# MEMOファイルを無視
 /MEMO.txt
 
-# 機密ファイルを無視
-.env
-*.pem
-*.key
-
-# ビルド成果物を無視
-/public/packs
-
-# 一時ファイルを無視
+# VimやEmacsの一時ファイル、macOSのシステムファイルを無視
 *.swp
 *~
 .DS_Store
@@ -94,27 +75,14 @@ lerna-debug.log*
 # 依存関係のディレクトリを無視
 /vendor/bundle
 
-# Logs
-logs
+# frontendの不要なビルド成果物を除外
+/frontend/node_modules
+/frontend/dist
+/frontend/dist-ssr
+
+# その他不要ファイルを除外
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+/tmp/*
+/log/*
+/storage/*

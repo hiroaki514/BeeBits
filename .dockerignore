@@ -1,6 +1,31 @@
+# Node.js関連のディレクトリを無視
 node_modules
+
+# 一時ファイルやログファイルを無視
 tmp
 log
+
+# Git管理ファイルを無視
 .git
+
+# macOSのシステムファイルを無視
 .DS_Store
+
+# 開発用の素材ディレクトリを無視
 development_materials
+
+# 必要なファイルやディレクトリを許可
+!Dockerfile
+!Gemfile
+!Gemfile.lock
+!entrypoint.sh
+!app/
+!config/
+!frontend/package.json
+!frontend/package-lock.json
+!bin/
+!db/
+!public/
+!storage/
+!tmp/.keep
+!log/.keep
