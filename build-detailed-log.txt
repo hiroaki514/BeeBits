@@ -1,0 +1,50 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.36kB done
+#1 DONE 0.0s
+
+#2 [auth] library/ruby:pull token for registry-1.docker.io
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/ruby:3.2.2-alpine3.18
+#3 DONE 1.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 580B done
+#4 DONE 0.0s
+
+#5 [ 1/13] FROM docker.io/library/ruby:3.2.2-alpine3.18@sha256:4c8b0ef9c990903aad87c7f4d99e2b41e553bc35c2a5e601f7f1b98016a42b90
+#5 CACHED
+
+#6 [internal] load build context
+#6 transferring context: 94.26MB 2.8s done
+#6 ERROR: archive/tar: unknown file mode ?rwxr-xr-x
+
+#7 [ 2/13] RUN apk update &&     apk upgrade &&     apk add --no-cache         build-base         linux-headers         libxml2-dev         curl-dev         mysql-client         mysql-dev         nodejs         npm         tzdata         bash         chromium         chromium-chromedriver         graphviz
+#7 0.297 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
+#7 0.711 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
+#7 1.485 v3.18.9-152-g55a6e58f2b3 [https://dl-cdn.alpinelinux.org/alpine/v3.18/main]
+#7 1.485 v3.18.9-151-gff984bafacb [https://dl-cdn.alpinelinux.org/alpine/v3.18/community]
+#7 1.485 OK: 20079 distinct packages available
+#7 1.951 Upgrading critical system libraries and apk-tools:
+#7 1.951 (1/1) Upgrading apk-tools (2.14.0-r2 -> 2.14.4-r0)
+#7 2.021 Executing busybox-1.36.1-r5.trigger
+#7 2.091 Continuing the upgrade transaction with new apk-tools:
+#7 2.096 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
+#7 2.220 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
+#7 2.540 (1/7) Upgrading libcrypto3 (3.1.4-r1 -> 3.1.7-r1)
+#7 2.634 (2/7) Upgrading libssl3 (3.1.4-r1 -> 3.1.7-r1)
+#7 2.654 (3/7) Upgrading busybox (1.36.1-r5 -> 1.36.1-r7)
+#7 2.697 Executing busybox-1.36.1-r7.post-upgrade
+#7 2.706 (4/7) Upgrading ssl_client (1.36.1-r5 -> 1.36.1-r7)
+#7 2.714 (5/7) Upgrading busybox-binsh (1.36.1-r5 -> 1.36.1-r7)
+#7 2.720 (6/7) Upgrading ca-certificates-bundle (20230506-r0 -> 20240226-r0)
+#7 2.744 (7/7) Upgrading ca-certificates (20230506-r0 -> 20240226-r0)
+#7 2.775 Executing busybox-1.36.1-r7.trigger
+#7 2.777 Executing ca-certificates-20240226-r0.trigger
+#7 CANCELED
+------
+ > [internal] load build context:
+------
+ERROR: failed to solve: archive/tar: unknown file mode ?rwxr-xr-x
