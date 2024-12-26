@@ -34,6 +34,19 @@ const PostForm = styled.div`
   }
 `;
 
+const SuccessMessage = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+`;
+
 interface Timeline {
   id: number;
   content: string;
@@ -46,6 +59,7 @@ const TimeLine: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
   const [newContent, setNewContent] = useState<string>(''); // 新しい投稿用
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // ログイン状態の確認
   useEffect(() => {
@@ -56,77 +70,51 @@ const TimeLine: React.FC = () => {
       .then((data) => setIsLoggedIn(data.logged_in));
   }, []);
 
-  // タイムラインデータの取得
   useEffect(() => {
     if (isLoggedIn) {
       fetch('http://localhost:3000/api/timelines', {
         credentials: 'include',
       })
         .then((response) => response.json())
-        .then((data) => setTimelines(data))
+        .then((data) => {
+          console.log('取得したタイムラインデータ:', data);
+          setTimelines(data);
+        })
         .catch((error) => console.error('データ取得エラー:', error));
     }
   }, [isLoggedIn]);
 
   // 投稿の作成
   const handlePost = async () => {
+    console.log('投稿開始'); // デバッグ用ログ
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Cookie情報を含める
+        credentials: 'include',
         body: JSON.stringify({
           content: newContent,
         }),
       });
-  
+
+      console.log('レスポンス:', response);
+
       if (response.ok) {
         const newTimeline = await response.json();
+        console.log('新しいタイムライン:', newTimeline);
         setTimelines((prev) => [newTimeline, ...prev]);
         setNewContent('');
-        alert('投稿が作成されました');
+        setSuccessMessage('投稿が作成されました');
       } else {
-        alert('投稿に失敗しました');
+        setSuccessMessage('投稿に失敗しました');
       }
     } catch (error) {
       console.error('投稿エラー:', error);
-      alert('投稿中にエラーが発生しました');
-    }
-  };
-
-  // いいね追加・解除
-  const handleLike = async (id: number, isLiked: boolean) => {
-    const url = isLiked
-      ? `http://localhost:3000/api/timelines/${id}/unlike`
-      : `http://localhost:3000/api/timelines/${id}/like`;
-
-    try {
-      const response = await fetch(url, {
-        method: isLiked ? 'DELETE' : 'POST',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        setTimelines((prev) =>
-          prev.map((timeline) =>
-            timeline.id === id
-              ? {
-                  ...timeline,
-                  favorites_count: isLiked
-                    ? timeline.favorites_count - 1
-                    : timeline.favorites_count + 1,
-                  is_liked: !isLiked,
-                }
-              : timeline
-          )
-        );
-      } else {
-        alert('いいね操作に失敗しました');
-      }
-    } catch (error) {
-      console.error('いいねエラー:', error);
+      setSuccessMessage('投稿中にエラーが発生しました');
+    } finally {
+      setTimeout(() => setSuccessMessage(null), 3000);
     }
   };
 
@@ -140,31 +128,15 @@ const TimeLine: React.FC = () => {
 
       if (response.ok) {
         setTimelines((prev) => prev.filter((timeline) => timeline.id !== id));
-        alert('投稿が削除されました');
+        setSuccessMessage('投稿が削除されました');
       } else {
-        alert('削除に失敗しました');
+        setSuccessMessage('削除に失敗しました');
       }
     } catch (error) {
       console.error('削除エラー:', error);
-    }
-  };
-
-  // ログアウト処理
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/users/sign_out', {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        alert('ログアウトしました');
-        window.location.href = 'http://localhost:3000/users/sign_in';
-      } else {
-        alert('ログアウトに失敗しました');
-      }
-    } catch (error) {
-      console.error('ログアウトエラー:', error);
+      setSuccessMessage('削除中にエラーが発生しました');
+    } finally {
+      setTimeout(() => setSuccessMessage(null), 3000);
     }
   };
 
@@ -182,36 +154,36 @@ const TimeLine: React.FC = () => {
   }
 
   return (
-    <Container>
-      <Header>タイムライン</Header>
-      <PostForm>
-        <textarea
-          value={newContent}
-          onChange={(e) => setNewContent(e.target.value)}
-          placeholder="新しい投稿を書く..."
-        ></textarea>
-        <button onClick={handlePost}>投稿する</button>
-      </PostForm>
-      {timelines.map((timeline) => (
-        <TimelineItem key={timeline.id}>
-          <div>
-            <strong>
-              <a href={`/profiles/${timeline.user.id}`}>
-                {timeline.user.name}
-              </a>
-            </strong>{' '}
-            {timeline.user.beebits_name}
-          </div>
-          <div>{timeline.content}</div>
-          <div>いいね数: {timeline.favorites_count}</div>
-          <button onClick={() => handleLike(timeline.id, timeline.is_liked)}>
-            {timeline.is_liked ? 'いいねを外す' : 'いいね'}
-          </button>
-          <button onClick={() => handleDelete(timeline.id)}>削除</button>
-        </TimelineItem>
-      ))}
-      <button onClick={handleLogout}>ログアウト</button>
-    </Container>
+    <>
+      {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+
+      <Container>
+        <Header>タイムライン</Header>
+        <PostForm>
+          <textarea
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+            placeholder="新しい投稿を書く..."
+          ></textarea>
+          <button onClick={handlePost}>投稿する</button>
+        </PostForm>
+        {timelines.map((timeline) => (
+          <TimelineItem key={timeline.id}>
+            <div>
+              <strong>
+                <a href={`/profiles/${timeline.user.id}`}>
+                  {timeline.user.name}
+                </a>
+              </strong>{' '}
+              {timeline.user.beebits_name}
+            </div>
+            <div>{timeline.content}</div>
+            <div>いいね数: {timeline.favorites_count}</div>
+            <button onClick={() => handleDelete(timeline.id)}>削除</button>
+          </TimelineItem>
+        ))}
+      </Container>
+    </>
   );
 };
 
