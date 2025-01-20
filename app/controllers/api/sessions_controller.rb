@@ -6,6 +6,7 @@ module Api
     skip_before_action :authenticate_user!, only: [:show]
 
     def show
+      Rails.logger.info("Current User: #{current_user.inspect}")
       if current_user
         render json: {
           logged_in: true,
@@ -19,5 +20,6 @@ module Api
         render json: { logged_in: false }, status: :unauthorized
       end
     end
+    
   end
 end
