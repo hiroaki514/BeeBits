@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom'; // useNavigate をインポート
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   padding: 20px;
@@ -19,7 +19,7 @@ const TimelineItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
-  cursor: pointer; /* クリック可能にする */
+  cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
@@ -58,18 +58,19 @@ interface Timeline {
   id: number;
   content: string;
   favorites_count: number;
-  is_liked: boolean; // いいね済みかどうか
+  total_replies_count: number; // ✅ 追加
+  is_liked: boolean;
+  parent_id?: number | null;
   user: { id: number; name: string; beebits_name: string };
 }
 
 const TimeLine: React.FC = () => {
-  const navigate = useNavigate(); // useNavigate を初期化
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [newContent, setNewContent] = useState<string>(''); // 新しい投稿用
+  const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // ログイン状態の確認
   useEffect(() => {
     fetch('http://localhost:3000/api/session', {
       credentials: 'include',
@@ -85,16 +86,14 @@ const TimeLine: React.FC = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('取得したタイムラインデータ:', data);
-          setTimelines(data);
+          const rootPosts = data.filter((t: Timeline) => t.parent_id == null);
+          setTimelines(rootPosts);
         })
         .catch((error) => console.error('データ取得エラー:', error));
     }
   }, [isLoggedIn]);
 
-  // 投稿の作成
   const handlePost = async () => {
-    console.log('投稿開始'); // デバッグ用ログ
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
@@ -107,11 +106,8 @@ const TimeLine: React.FC = () => {
         }),
       });
 
-      console.log('レスポンス:', response);
-
       if (response.ok) {
         const newTimeline = await response.json();
-        console.log('新しいタイムライン:', newTimeline);
         setTimelines((prev) => [newTimeline, ...prev]);
         setNewContent('');
         setSuccessMessage('投稿が作成されました');
@@ -126,7 +122,6 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  // 投稿の削除
   const handleDelete = async (id: number) => {
     try {
       const response = await fetch(`http://localhost:3000/api/timelines/${id}`, {
@@ -178,7 +173,7 @@ const TimeLine: React.FC = () => {
         {timelines.map((timeline) => (
           <TimelineItem
             key={timeline.id}
-            onClick={() => navigate(`/timelines/${timeline.id}`)} // クリックで詳細ページに遷移
+            onClick={() => navigate(`/timelines/${timeline.id}`)}
           >
             <div>
               <strong>
@@ -190,7 +185,11 @@ const TimeLine: React.FC = () => {
             </div>
             <div>{timeline.content}</div>
             <div>いいね数: {timeline.favorites_count}</div>
-            <button onClick={() => handleDelete(timeline.id)}>削除</button>
+            <div>リプライ数: {timeline.total_replies_count}</div> {/* ✅ 追加 */}
+            <button onClick={(e) => {
+              e.stopPropagation(); // 親divのクリックイベントを止める
+              handleDelete(timeline.id);
+            }}>削除</button>
           </TimelineItem>
         ))}
       </Container>
