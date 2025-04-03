@@ -20,6 +20,6 @@ Rails.application.routes.draw do
     resource :session, only: [:show]
   end
 
-  # ✅ ルート画面（ログイン状態であれば timelines#index、未ログインなら sign_in にリダイレクトされる）
-  root 'timelines#index'
+  # ✅ ルート画面（ログイン状態であれば api/timelines#index、未ログインなら sign_in にリダイレクトされる）
+  root 'api/timelines#index'
 end
