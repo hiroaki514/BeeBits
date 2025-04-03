@@ -19,7 +19,14 @@ module Api
       timeline = Timeline.new(timeline_params)
       timeline.user = current_user
       if timeline.save
-        render json: { message: '投稿が送信されました' }, status: :created
+        timeline_with_relations = Timeline.includes(:user, :favorites).find(timeline.id)
+        render json: timeline_with_relations.as_json(
+          include: {
+            user: { only: %i[id name beebits_name] },
+            favorites: { only: %i[id user_id] }
+          },
+          methods: [:favorites_count]
+        ), status: :created
       else
         render json: { error: '投稿に失敗しました' }, status: :unprocessable_entity
       end
