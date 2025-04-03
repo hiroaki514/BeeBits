@@ -10,19 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_07_28_164514) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_03_065522) do
   create_table "favorites", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "timeline_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "timeline_id", null: false
+    t.index ["timeline_id"], name: "index_favorites_on_timeline_id"
+    t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
   create_table "reserve_post_timelines", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "content", null: false, comment: "予約投稿内容"
-    t.integer "user_id", null: false, comment: "ユーザーID"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_reserve_post_timelines_on_user_id"
   end
 
   create_table "timelines", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -51,5 +54,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_07_28_164514) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "favorites", "timelines"
+  add_foreign_key "favorites", "users"
+  add_foreign_key "reserve_post_timelines", "users"
   add_foreign_key "timelines", "users"
 end

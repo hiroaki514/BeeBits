@@ -19,4 +19,7 @@ Rails.application.routes.draw do
     # ログイン状態確認API
     resource :session, only: [:show]
   end
+
+  # ✅ ルート画面（ログイン状態であれば timelines#index、未ログインなら sign_in にリダイレクトされる）
+  root 'timelines#index'
 end
