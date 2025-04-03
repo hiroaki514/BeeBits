@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom'; // useNavigate をインポート
 
 const Container = styled.div`
   padding: 20px;
@@ -18,6 +19,12 @@ const TimelineItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
+  cursor: pointer; /* クリック可能にする */
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;
 
 const LoadingMessage = styled.p`
@@ -56,6 +63,7 @@ interface Timeline {
 }
 
 const TimeLine: React.FC = () => {
+  const navigate = useNavigate(); // useNavigate を初期化
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
   const [newContent, setNewContent] = useState<string>(''); // 新しい投稿用
@@ -168,7 +176,10 @@ const TimeLine: React.FC = () => {
           <button onClick={handlePost}>投稿する</button>
         </PostForm>
         {timelines.map((timeline) => (
-          <TimelineItem key={timeline.id}>
+          <TimelineItem
+            key={timeline.id}
+            onClick={() => navigate(`/timelines/${timeline.id}`)} // クリックで詳細ページに遷移
+          >
             <div>
               <strong>
                 <a href={`/profiles/${timeline.user.id}`}>
