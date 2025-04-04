@@ -14,7 +14,6 @@ const TimelineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [timeline, setTimeline] = useState<Timeline | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState<string>('');
@@ -40,22 +39,7 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
-  const fetchCurrentUser = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/session', {
-        credentials: 'include',
-      });
-      const data = await response.json();
-      if (data.logged_in) {
-        setCurrentUserId(data.user.id);
-      }
-    } catch (error) {
-      console.error('ユーザー情報の取得に失敗しました');
-    }
-  };
-
   useEffect(() => {
-    fetchCurrentUser();
     fetchTimeline();
   }, [id]);
 
@@ -109,51 +93,49 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
+  const renderReplies = (replies: Timeline[], rootUserId: number, level = 1): JSX.Element[] => {
+    return replies.flatMap((reply) => {
+      const isRootUser = reply.user.id === rootUserId;
+      if (level === 1 || (level === 2 && isRootUser)) {
+        return [
+          <div
+            key={reply.id}
+            style={{
+              marginLeft: `${level * 20}px`,
+              borderLeft: '2px solid #ccc',
+              paddingLeft: '10px',
+              cursor: 'pointer',
+            }}
+            onClick={() => navigate(`/timelines/${reply.id}`)}
+          >
+            <div>
+              <strong>{reply.user.name}</strong> ({reply.user.beebits_name})
+            </div>
+            <div>{reply.content}</div>
+            <div>いいね数: {reply.favorites_count}</div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setPopupTarget(reply);
+                setShowPopup(true);
+              }}
+            >
+              リプライ
+            </button>
+            {reply.replies && renderReplies(reply.replies, rootUserId, level + 1)}
+          </div>,
+        ];
+      }
+      return [];
+    });
+  };
+
   if (loading) return <div>読み込み中...</div>;
   if (error) return <div>{error}</div>;
   if (!timeline) return <div>投稿が見つかりません。</div>;
 
-  const renderReplies = (replies: Timeline[]) => {
-    return replies.map((reply) => {
-      const shouldDisplay =
-        reply.parent_id === timeline.id || reply.user.id === currentUserId;
-
-      if (!shouldDisplay) return null;
-
-      return (
-        <div
-          key={reply.id}
-          style={{
-            marginLeft: '20px',
-            borderLeft: '2px solid #ccc',
-            paddingLeft: '10px',
-            cursor: 'pointer',
-          }}
-          onClick={() => navigate(`/timelines/${reply.id}`)}
-        >
-          <div>
-            <strong>{reply.user.name}</strong> ({reply.user.beebits_name})
-          </div>
-          <div>{reply.content}</div>
-          <div>いいね数: {reply.favorites_count}</div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setPopupTarget(reply);
-              setShowPopup(true);
-            }}
-          >
-            リプライ
-          </button>
-          {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies)}
-        </div>
-      );
-    });
-  };
-
   return (
     <div style={{ padding: '20px' }}>
-      {/* 🔙 戻るボタン（親があればその詳細、なければ一覧へ） */}
       <button
         onClick={() => {
           if (timeline.parent_id) {
@@ -168,7 +150,7 @@ const TimelineDetail: React.FC = () => {
           border: '1px solid #ccc',
           borderRadius: '4px',
           backgroundColor: '#f0f0f0',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         ← 戻る
@@ -197,7 +179,7 @@ const TimelineDetail: React.FC = () => {
       <div style={{ marginTop: '40px' }}>
         <h3>リプライ</h3>
         {timeline.replies && timeline.replies.length > 0 ? (
-          renderReplies(timeline.replies)
+          renderReplies(timeline.replies, timeline.user.id)
         ) : (
           <div>リプライはありません。</div>
         )}
