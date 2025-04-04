@@ -80,6 +80,16 @@ interface Timeline {
   user: { id: number; name: string; beebits_name: string };
 }
 
+const MAX_CONTENT_LENGTH = 140;
+
+// 🔒 HTMLエスケープ（XSS対策）
+const escapeHTML = (str: string) =>
+  str.replace(/&/g, '&amp;')
+     .replace(/</g, '&lt;')
+     .replace(/>/g, '&gt;')
+     .replace(/"/g, '&quot;')
+     .replace(/'/g, '&#39;');
+
 const TimeLine: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -125,6 +135,15 @@ const TimeLine: React.FC = () => {
   };
 
   const handlePost = async () => {
+    if (!newContent.trim()) {
+      setSuccessMessage('投稿内容を入力してください');
+      return;
+    }
+    if (newContent.length > MAX_CONTENT_LENGTH) {
+      setSuccessMessage('投稿は140文字以内で入力してください');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
@@ -182,7 +201,14 @@ const TimeLine: React.FC = () => {
   };
 
   const handlePopupSubmit = async () => {
-    if (!popupTarget || !popupContent.trim()) return;
+    if (!popupTarget || !popupContent.trim()) {
+      setSuccessMessage('投稿内容を入力してください');
+      return;
+    }
+    if (popupContent.length > MAX_CONTENT_LENGTH) {
+      setSuccessMessage('投稿は140文字以内で入力してください');
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:3000/api/timelines`, {
@@ -231,6 +257,9 @@ const TimeLine: React.FC = () => {
             onChange={(e) => setNewContent(e.target.value)}
             placeholder="新しい投稿を書く..."
           />
+          <div style={{ fontSize: '12px', color: newContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+            {newContent.length} / {MAX_CONTENT_LENGTH}
+          </div>
           <button onClick={handlePost}>投稿する</button>
         </PostForm>
 
@@ -247,7 +276,7 @@ const TimeLine: React.FC = () => {
               </strong>{' '}
               {timeline.user.beebits_name}
             </div>
-            <div>{timeline.content}</div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
             <div>いいね数: {timeline.favorites_count}</div>
             <div>リプライ数: {timeline.total_replies_count}</div>
             {currentUserId === timeline.user.id && (
@@ -274,13 +303,16 @@ const TimeLine: React.FC = () => {
           <ModalContent>
             <h4>リプライ対象：</h4>
             <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
-            <p>{popupTarget.content}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
             <textarea
               value={popupContent}
               onChange={(e) => setPopupContent(e.target.value)}
               rows={4}
               style={{ width: '100%', marginBottom: '10px' }}
             />
+            <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+              {popupContent.length} / {MAX_CONTENT_LENGTH}
+            </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>キャンセル</button>
               <button onClick={handlePopupSubmit}>リプライする</button>

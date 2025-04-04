@@ -13,6 +13,15 @@ interface Timeline {
 
 const MAX_CONTENT_LENGTH = 140;
 
+// 🔽 XSS対策：HTMLエスケープ関数
+const escapeHTML = (str: string) => {
+  return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+};
+
 const TimelineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -117,7 +126,7 @@ const TimelineDetail: React.FC = () => {
         return [
           <div key={reply.id} style={{ marginLeft: level * 20, borderLeft: '2px solid #ccc', paddingLeft: 10, cursor: 'pointer' }} onClick={() => navigate(`/timelines/${reply.id}`)}>
             <div><strong>{reply.user.name}</strong>（{reply.user.beebits_name}）</div>
-            <div>{reply.content}</div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(reply.content)}</div>
             <div>いいね数: {reply.favorites_count}</div>
             <button onClick={(e) => { e.stopPropagation(); setPopupTarget(reply); setShowPopup(true); }}>リプライ</button>
             {currentUserId === reply.user.id && (
@@ -145,7 +154,7 @@ const TimelineDetail: React.FC = () => {
 
       <h2>投稿詳細</h2>
       <div><strong>{timeline.user.name}</strong>（{timeline.user.beebits_name}）</div>
-      <div>{timeline.content}</div>
+      <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
       <div>いいね数: {timeline.favorites_count}</div>
 
       {currentUserId === timeline.user.id && (
@@ -186,7 +195,7 @@ const TimelineDetail: React.FC = () => {
           <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, width: 400 }}>
             <h4>リプライ対象：</h4>
             <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
-            <p>{popupTarget.content}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
             <textarea value={popupContent} onChange={(e) => setPopupContent(e.target.value)} rows={4} style={{ width: '100%', marginBottom: 10 }} />
             <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
               {popupContent.length} / {MAX_CONTENT_LENGTH}
