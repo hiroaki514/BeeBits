@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface Timeline {
   id: number;
   content: string;
   user: { id: number; name: string; beebits_name: string };
   favorites_count: number;
+  parent_id?: number;
   replies?: Timeline[];
 }
 
 const TimelineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [timeline, setTimeline] = useState<Timeline | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  // 🔽 ポップアップ管理
   const [showPopup, setShowPopup] = useState(false);
   const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
   const [popupContent, setPopupContent] = useState<string>('');
@@ -38,11 +40,25 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/session', {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.logged_in) {
+        setCurrentUserId(data.user.id);
+      }
+    } catch (error) {
+      console.error('ユーザー情報の取得に失敗しました');
+    }
+  };
+
   useEffect(() => {
+    fetchCurrentUser();
     fetchTimeline();
   }, [id]);
 
-  // 🔁 通常の詳細画面の投稿フォームからリプライ
   const handleReplySubmit = async () => {
     if (!replyContent.trim()) return;
     setSubmitting(true);
@@ -60,7 +76,7 @@ const TimelineDetail: React.FC = () => {
       if (!response.ok) throw new Error('リプライの投稿に失敗しました');
 
       setReplyContent('');
-      await fetchTimeline(); // ✅ 再取得してツリーを更新
+      await fetchTimeline();
     } catch (error) {
       console.error('リプライ投稿エラー:', error);
       setError('リプライの投稿に失敗しました');
@@ -69,7 +85,6 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
-  // 🔁 ポップアップからのリプライ投稿
   const handlePopupSubmit = async () => {
     if (!popupTarget || !popupContent.trim()) return;
     try {
@@ -87,7 +102,7 @@ const TimelineDetail: React.FC = () => {
 
       setPopupContent('');
       setShowPopup(false);
-      await fetchTimeline(); // ✅ 投稿後に再取得で即時反映
+      await fetchTimeline();
     } catch (error) {
       console.error('ポップアップ投稿エラー:', error);
       setError('リプライの投稿に失敗しました');
@@ -99,27 +114,66 @@ const TimelineDetail: React.FC = () => {
   if (!timeline) return <div>投稿が見つかりません。</div>;
 
   const renderReplies = (replies: Timeline[]) => {
-    return replies.map((reply) => (
-      <div
-        key={reply.id}
-        style={{ marginLeft: '20px', borderLeft: '2px solid #ccc', paddingLeft: '10px' }}
-      >
-        <div>
-          <strong>{reply.user.name}</strong> ({reply.user.beebits_name})
+    return replies.map((reply) => {
+      const shouldDisplay =
+        reply.parent_id === timeline.id || reply.user.id === currentUserId;
+
+      if (!shouldDisplay) return null;
+
+      return (
+        <div
+          key={reply.id}
+          style={{
+            marginLeft: '20px',
+            borderLeft: '2px solid #ccc',
+            paddingLeft: '10px',
+            cursor: 'pointer',
+          }}
+          onClick={() => navigate(`/timelines/${reply.id}`)}
+        >
+          <div>
+            <strong>{reply.user.name}</strong> ({reply.user.beebits_name})
+          </div>
+          <div>{reply.content}</div>
+          <div>いいね数: {reply.favorites_count}</div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setPopupTarget(reply);
+              setShowPopup(true);
+            }}
+          >
+            リプライ
+          </button>
+          {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies)}
         </div>
-        <div>{reply.content}</div>
-        <div>いいね数: {reply.favorites_count}</div>
-        <button onClick={() => {
-          setPopupTarget(reply);
-          setShowPopup(true);
-        }}>リプライ</button>
-        {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies)}
-      </div>
-    ));
+      );
+    });
   };
 
   return (
     <div style={{ padding: '20px' }}>
+      {/* 🔙 戻るボタン（親があればその詳細、なければ一覧へ） */}
+      <button
+        onClick={() => {
+          if (timeline.parent_id) {
+            navigate(`/timelines/${timeline.parent_id}`);
+          } else {
+            navigate('/timelines');
+          }
+        }}
+        style={{
+          marginBottom: '10px',
+          padding: '6px 12px',
+          border: '1px solid #ccc',
+          borderRadius: '4px',
+          backgroundColor: '#f0f0f0',
+          cursor: 'pointer'
+        }}
+      >
+        ← 戻る
+      </button>
+
       <h2>投稿詳細</h2>
       <div>
         <strong>{timeline.user.name}</strong> ({timeline.user.beebits_name})
@@ -127,7 +181,6 @@ const TimelineDetail: React.FC = () => {
       <div>{timeline.content}</div>
       <div>いいね数: {timeline.favorites_count}</div>
 
-      {/* 🔽 通常リプライ投稿フォーム */}
       <div style={{ marginTop: '30px' }}>
         <h3>リプライを投稿</h3>
         <textarea
@@ -141,7 +194,6 @@ const TimelineDetail: React.FC = () => {
         </button>
       </div>
 
-      {/* 🔽 リプライツリー表示 */}
       <div style={{ marginTop: '40px' }}>
         <h3>リプライ</h3>
         {timeline.replies && timeline.replies.length > 0 ? (
@@ -151,7 +203,6 @@ const TimelineDetail: React.FC = () => {
         )}
       </div>
 
-      {/* 🔽 ポップアップ投稿 */}
       {showPopup && popupTarget && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
