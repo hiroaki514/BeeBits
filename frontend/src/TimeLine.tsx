@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   padding: 20px;
@@ -18,6 +19,11 @@ const TimelineItem = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;
 
 const LoadingMessage = styled.p`
@@ -47,63 +53,107 @@ const SuccessMessage = styled.div`
   z-index: 1000;
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+`;
+
 interface Timeline {
   id: number;
   content: string;
   favorites_count: number;
-  is_liked: boolean; // いいね済みかどうか
+  total_replies_count: number;
+  is_liked: boolean;
+  parent_id?: number | null;
   user: { id: number; name: string; beebits_name: string };
 }
 
+const MAX_CONTENT_LENGTH = 140;
+
+// 🔒 HTMLエスケープ（XSS対策）
+const escapeHTML = (str: string) =>
+  str.replace(/&/g, '&amp;')
+     .replace(/</g, '&lt;')
+     .replace(/>/g, '&gt;')
+     .replace(/"/g, '&quot;')
+     .replace(/'/g, '&#39;');
+
 const TimeLine: React.FC = () => {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [newContent, setNewContent] = useState<string>(''); // 新しい投稿用
+  const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
-  // ログイン状態の確認
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
+  const [popupContent, setPopupContent] = useState('');
+
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+
   useEffect(() => {
     fetch('http://localhost:3000/api/session', {
       credentials: 'include',
     })
       .then((response) => response.json())
-      .then((data) => setIsLoggedIn(data.logged_in));
+      .then((data) => {
+        setIsLoggedIn(data.logged_in);
+        setCurrentUserId(data.user?.id || null);
+      });
   }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetch('http://localhost:3000/api/timelines', {
-        credentials: 'include',
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('取得したタイムラインデータ:', data);
-          setTimelines(data);
-        })
-        .catch((error) => console.error('データ取得エラー:', error));
+      loadTimelines();
     }
   }, [isLoggedIn]);
 
-  // 投稿の作成
+  const loadTimelines = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/timelines', {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      const rootPosts = data.filter((t: Timeline) => t.parent_id == null);
+      setTimelines(rootPosts);
+    } catch (error) {
+      console.error('データ取得エラー:', error);
+    }
+  };
+
   const handlePost = async () => {
-    console.log('投稿開始'); // デバッグ用ログ
+    if (!newContent.trim()) {
+      setSuccessMessage('投稿内容を入力してください');
+      return;
+    }
+    if (newContent.length > MAX_CONTENT_LENGTH) {
+      setSuccessMessage('投稿は140文字以内で入力してください');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          content: newContent,
-        }),
+        body: JSON.stringify({ content: newContent }),
       });
-
-      console.log('レスポンス:', response);
 
       if (response.ok) {
         const newTimeline = await response.json();
-        console.log('新しいタイムライン:', newTimeline);
         setTimelines((prev) => [newTimeline, ...prev]);
         setNewContent('');
         setSuccessMessage('投稿が作成されました');
@@ -118,16 +168,21 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  // 投稿の削除
-  const handleDelete = async (id: number) => {
+  const confirmDelete = (id: number) => {
+    setDeleteTargetId(id);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTargetId) return;
+
     try {
-      const response = await fetch(`http://localhost:3000/api/timelines/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/timelines/${deleteTargetId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
 
       if (response.ok) {
-        setTimelines((prev) => prev.filter((timeline) => timeline.id !== id));
+        await loadTimelines();
         setSuccessMessage('投稿が削除されました');
       } else {
         setSuccessMessage('削除に失敗しました');
@@ -136,7 +191,44 @@ const TimeLine: React.FC = () => {
       console.error('削除エラー:', error);
       setSuccessMessage('削除中にエラーが発生しました');
     } finally {
+      setDeleteTargetId(null);
       setTimeout(() => setSuccessMessage(null), 3000);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteTargetId(null);
+  };
+
+  const handlePopupSubmit = async () => {
+    if (!popupTarget || !popupContent.trim()) {
+      setSuccessMessage('投稿内容を入力してください');
+      return;
+    }
+    if (popupContent.length > MAX_CONTENT_LENGTH) {
+      setSuccessMessage('投稿は140文字以内で入力してください');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/timelines`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          content: popupContent,
+          parent_id: popupTarget.id,
+        }),
+      });
+
+      if (response.ok) {
+        setPopupContent('');
+        setShowPopup(false);
+        await loadTimelines();
+      }
+    } catch (e) {
+      setSuccessMessage('リプライ投稿に失敗しました');
+      setShowPopup(false);
     }
   };
 
@@ -164,11 +256,18 @@ const TimeLine: React.FC = () => {
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
             placeholder="新しい投稿を書く..."
-          ></textarea>
+          />
+          <div style={{ fontSize: '12px', color: newContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+            {newContent.length} / {MAX_CONTENT_LENGTH}
+          </div>
           <button onClick={handlePost}>投稿する</button>
         </PostForm>
+
         {timelines.map((timeline) => (
-          <TimelineItem key={timeline.id}>
+          <TimelineItem
+            key={timeline.id}
+            onClick={() => navigate(`/timelines/${timeline.id}`)}
+          >
             <div>
               <strong>
                 <a href={`/profiles/${timeline.user.id}`}>
@@ -177,12 +276,62 @@ const TimeLine: React.FC = () => {
               </strong>{' '}
               {timeline.user.beebits_name}
             </div>
-            <div>{timeline.content}</div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
             <div>いいね数: {timeline.favorites_count}</div>
-            <button onClick={() => handleDelete(timeline.id)}>削除</button>
+            <div>リプライ数: {timeline.total_replies_count}</div>
+            {currentUserId === timeline.user.id && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  confirmDelete(timeline.id);
+                }}
+              >
+                削除
+              </button>
+            )}
+            <button onClick={(e) => {
+              e.stopPropagation();
+              setPopupTarget(timeline);
+              setShowPopup(true);
+            }}>リプライ</button>
           </TimelineItem>
         ))}
       </Container>
+
+      {showPopup && popupTarget && (
+        <ModalOverlay>
+          <ModalContent>
+            <h4>リプライ対象：</h4>
+            <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
+            <textarea
+              value={popupContent}
+              onChange={(e) => setPopupContent(e.target.value)}
+              rows={4}
+              style={{ width: '100%', marginBottom: '10px' }}
+            />
+            <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+              {popupContent.length} / {MAX_CONTENT_LENGTH}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={handlePopupSubmit}>リプライする</button>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {deleteTargetId && (
+        <ModalOverlay>
+          <ModalContent>
+            <p>この投稿を削除しますか？</p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={cancelDelete} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={executeDelete}>削除する</button>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </>
   );
 };

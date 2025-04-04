@@ -1,7 +1,8 @@
 import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // ✅ Navigate を追加
 import TimeLine from './TimeLine';
+import TimelineDetail from './TimelineDetail'; // ✅ 投稿詳細用コンポーネントを読み込み
 
 // ログイン状態を確認してリダイレクト処理を行うコンポーネント
 const LoginRedirect = () => {
@@ -26,11 +27,10 @@ const LoginRedirect = () => {
     return null; // ローディング中は何も表示しない
   }
 
-  // ログイン済みの場合はタイムラインを表示、未ログインの場合はログイン画面にリダイレクト
+  // ✅ 修正：ログイン済みなら /timelines にリダイレクトする
   return isLoggedIn ? (
-    <TimeLine />
+    <Navigate to="/timelines" />
   ) : (
-    // 修正箇所: 外部URLへのリダイレクトにwindow.location.hrefを使用
     (window.location.href = 'http://localhost:3000/users/sign_in')
   );
 };
@@ -39,9 +39,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
       <Routes>
-        {/* 修正箇所: 明確にルートとタイムラインのパスを指定 */}
+        {/* ルート確認および一覧表示用 */}
         <Route path="/" element={<LoginRedirect />} />
         <Route path="/timelines" element={<TimeLine />} />
+        {/* ✅ 投稿詳細ページ */}
+        <Route path="/timelines/:id" element={<TimelineDetail />} />
       </Routes>
     </Router>
   </StrictMode>
