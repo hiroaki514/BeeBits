@@ -11,6 +11,8 @@ interface Timeline {
   is_deleted?: boolean;
 }
 
+const MAX_CONTENT_LENGTH = 140;
+
 const TimelineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ const TimelineDetail: React.FC = () => {
   };
 
   const handleReplySubmit = async () => {
-    if (!replyContent.trim()) return;
+    if (!replyContent.trim() || replyContent.length > MAX_CONTENT_LENGTH) return;
     setSubmitting(true);
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
@@ -77,7 +79,7 @@ const TimelineDetail: React.FC = () => {
   };
 
   const handlePopupSubmit = async () => {
-    if (!popupTarget || !popupContent.trim()) return;
+    if (!popupTarget || !popupContent.trim() || popupContent.length > MAX_CONTENT_LENGTH) return;
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
@@ -155,7 +157,17 @@ const TimelineDetail: React.FC = () => {
       <div style={{ marginTop: 30 }}>
         <h3>リプライを投稿</h3>
         <textarea value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={4} style={{ width: '100%', marginBottom: 10 }} />
-        <button onClick={handleReplySubmit} disabled={submitting}>{submitting ? '投稿中...' : 'リプライする'}</button>
+        <div style={{ fontSize: '12px', color: replyContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+          {replyContent.length} / {MAX_CONTENT_LENGTH}
+        </div>
+        {replyContent.length > MAX_CONTENT_LENGTH && (
+          <div style={{ color: 'red', fontSize: '14px' }}>
+            140文字以内で入力してください。
+          </div>
+        )}
+        <button onClick={handleReplySubmit} disabled={submitting || replyContent.length > MAX_CONTENT_LENGTH || !replyContent.trim()}>
+          {submitting ? '投稿中...' : 'リプライする'}
+        </button>
       </div>
 
       <div style={{ marginTop: 40 }}>
@@ -176,9 +188,19 @@ const TimelineDetail: React.FC = () => {
             <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
             <p>{popupTarget.content}</p>
             <textarea value={popupContent} onChange={(e) => setPopupContent(e.target.value)} rows={4} style={{ width: '100%', marginBottom: 10 }} />
+            <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+              {popupContent.length} / {MAX_CONTENT_LENGTH}
+            </div>
+            {popupContent.length > MAX_CONTENT_LENGTH && (
+              <div style={{ color: 'red', fontSize: '14px' }}>
+                140文字以内で入力してください。
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => setShowPopup(false)} style={{ marginRight: 10 }}>キャンセル</button>
-              <button onClick={handlePopupSubmit}>リプライする</button>
+              <button onClick={handlePopupSubmit} disabled={popupContent.length > MAX_CONTENT_LENGTH || !popupContent.trim()}>
+                リプライする
+              </button>
             </div>
           </div>
         </div>
