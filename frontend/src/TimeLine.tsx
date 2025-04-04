@@ -58,7 +58,7 @@ interface Timeline {
   id: number;
   content: string;
   favorites_count: number;
-  total_replies_count: number; // ✅ 追加
+  total_replies_count: number;
   is_liked: boolean;
   parent_id?: number | null;
   user: { id: number; name: string; beebits_name: string };
@@ -71,6 +71,10 @@ const TimeLine: React.FC = () => {
   const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
+  const [popupContent, setPopupContent] = useState('');
+
   useEffect(() => {
     fetch('http://localhost:3000/api/session', {
       credentials: 'include',
@@ -81,29 +85,30 @@ const TimeLine: React.FC = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetch('http://localhost:3000/api/timelines', {
-        credentials: 'include',
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const rootPosts = data.filter((t: Timeline) => t.parent_id == null);
-          setTimelines(rootPosts);
-        })
-        .catch((error) => console.error('データ取得エラー:', error));
+      loadTimelines();
     }
   }, [isLoggedIn]);
+
+  const loadTimelines = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/timelines', {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      const rootPosts = data.filter((t: Timeline) => t.parent_id == null);
+      setTimelines(rootPosts);
+    } catch (error) {
+      console.error('データ取得エラー:', error);
+    }
+  };
 
   const handlePost = async () => {
     try {
       const response = await fetch('http://localhost:3000/api/timelines', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          content: newContent,
-        }),
+        body: JSON.stringify({ content: newContent }),
       });
 
       if (response.ok) {
@@ -143,6 +148,31 @@ const TimeLine: React.FC = () => {
     }
   };
 
+  const handlePopupSubmit = async () => {
+    if (!popupTarget || !popupContent.trim()) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/timelines`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          content: popupContent,
+          parent_id: popupTarget.id,
+        }),
+      });
+
+      if (response.ok) {
+        setPopupContent('');
+        setShowPopup(false);
+        await loadTimelines(); // ✅ 即時反映
+      }
+    } catch (e) {
+      setSuccessMessage('リプライ投稿に失敗しました');
+      setShowPopup(false);
+    }
+  };
+
   if (isLoggedIn === null) {
     return (
       <Container>
@@ -167,9 +197,10 @@ const TimeLine: React.FC = () => {
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
             placeholder="新しい投稿を書く..."
-          ></textarea>
+          />
           <button onClick={handlePost}>投稿する</button>
         </PostForm>
+
         {timelines.map((timeline) => (
           <TimelineItem
             key={timeline.id}
@@ -185,14 +216,44 @@ const TimeLine: React.FC = () => {
             </div>
             <div>{timeline.content}</div>
             <div>いいね数: {timeline.favorites_count}</div>
-            <div>リプライ数: {timeline.total_replies_count}</div> {/* ✅ 追加 */}
+            <div>リプライ数: {timeline.total_replies_count}</div>
             <button onClick={(e) => {
-              e.stopPropagation(); // 親divのクリックイベントを止める
+              e.stopPropagation();
               handleDelete(timeline.id);
             }}>削除</button>
+            <button onClick={(e) => {
+              e.stopPropagation();
+              setPopupTarget(timeline);
+              setShowPopup(true);
+            }}>リプライ</button>
           </TimelineItem>
         ))}
       </Container>
+
+      {/* 🔽 ポップアップ */}
+      {showPopup && popupTarget && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', zIndex: 1000
+        }}>
+          <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, width: '400px' }}>
+            <h4>リプライ対象：</h4>
+            <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
+            <p>{popupTarget.content}</p>
+            <textarea
+              value={popupContent}
+              onChange={(e) => setPopupContent(e.target.value)}
+              rows={4}
+              style={{ width: '100%', marginBottom: '10px' }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={handlePopupSubmit}>リプライする</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
