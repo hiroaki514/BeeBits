@@ -20,7 +20,6 @@ const TimelineItem = styled.div`
   border-radius: 8px;
   background-color: #fff;
   cursor: pointer;
-  transition: background-color 0.2s;
 
   &:hover {
     background-color: #f5f5f5;
@@ -54,6 +53,23 @@ const SuccessMessage = styled.div`
   z-index: 1000;
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+`;
+
 interface Timeline {
   id: number;
   content: string;
@@ -70,17 +86,23 @@ const TimeLine: React.FC = () => {
   const [timelines, setTimelines] = useState<Timeline[]>([]);
   const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   const [showPopup, setShowPopup] = useState(false);
   const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
   const [popupContent, setPopupContent] = useState('');
+
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/session', {
       credentials: 'include',
     })
       .then((response) => response.json())
-      .then((data) => setIsLoggedIn(data.logged_in));
+      .then((data) => {
+        setIsLoggedIn(data.logged_in);
+        setCurrentUserId(data.user?.id || null);
+      });
   }, []);
 
   useEffect(() => {
@@ -127,15 +149,21 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const confirmDelete = (id: number) => {
+    setDeleteTargetId(id);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTargetId) return;
+
     try {
-      const response = await fetch(`http://localhost:3000/api/timelines/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/timelines/${deleteTargetId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
 
       if (response.ok) {
-        setTimelines((prev) => prev.filter((timeline) => timeline.id !== id));
+        await loadTimelines();
         setSuccessMessage('投稿が削除されました');
       } else {
         setSuccessMessage('削除に失敗しました');
@@ -144,8 +172,13 @@ const TimeLine: React.FC = () => {
       console.error('削除エラー:', error);
       setSuccessMessage('削除中にエラーが発生しました');
     } finally {
+      setDeleteTargetId(null);
       setTimeout(() => setSuccessMessage(null), 3000);
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteTargetId(null);
   };
 
   const handlePopupSubmit = async () => {
@@ -165,7 +198,7 @@ const TimeLine: React.FC = () => {
       if (response.ok) {
         setPopupContent('');
         setShowPopup(false);
-        await loadTimelines(); // ✅ 即時反映
+        await loadTimelines();
       }
     } catch (e) {
       setSuccessMessage('リプライ投稿に失敗しました');
@@ -217,10 +250,16 @@ const TimeLine: React.FC = () => {
             <div>{timeline.content}</div>
             <div>いいね数: {timeline.favorites_count}</div>
             <div>リプライ数: {timeline.total_replies_count}</div>
-            <button onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(timeline.id);
-            }}>削除</button>
+            {currentUserId === timeline.user.id && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  confirmDelete(timeline.id);
+                }}
+              >
+                削除
+              </button>
+            )}
             <button onClick={(e) => {
               e.stopPropagation();
               setPopupTarget(timeline);
@@ -230,14 +269,9 @@ const TimeLine: React.FC = () => {
         ))}
       </Container>
 
-      {/* 🔽 ポップアップ */}
       {showPopup && popupTarget && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, width: '400px' }}>
+        <ModalOverlay>
+          <ModalContent>
             <h4>リプライ対象：</h4>
             <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
             <p>{popupTarget.content}</p>
@@ -251,8 +285,20 @@ const TimeLine: React.FC = () => {
               <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>キャンセル</button>
               <button onClick={handlePopupSubmit}>リプライする</button>
             </div>
-          </div>
-        </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {deleteTargetId && (
+        <ModalOverlay>
+          <ModalContent>
+            <p>この投稿を削除しますか？</p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={cancelDelete} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={executeDelete}>削除する</button>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
       )}
     </>
   );
