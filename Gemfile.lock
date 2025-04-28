@@ -75,8 +75,6 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
-    autoprefixer-rails (10.4.19.0)
-      execjs (~> 2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     benchmark (0.4.0)
@@ -88,8 +86,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    bootstrap (5.3.3)
-      autoprefixer-rails (>= 9.1.0)
+    bootstrap (5.3.5)
       popper_js (>= 2.11.8, < 3)
     builder (3.3.0)
     byebug (12.0.0)
@@ -124,7 +121,6 @@ GEM
     diff-lcs (1.6.0)
     drb (2.2.1)
     erubi (1.13.1)
-    execjs (2.10.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.4)
@@ -382,7 +378,7 @@ PLATFORMS
 DEPENDENCIES
   better_errors
   bootsnap
-  bootstrap (~> 5.3.3)
+  bootstrap (~> 5.3.5)
   capybara
   debug
   devise
