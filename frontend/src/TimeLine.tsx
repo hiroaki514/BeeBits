@@ -1,30 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const Container = styled.div`
-  padding: 20px;
-  background-color: #add8e6;
-  border-radius: 8px;
-`;
-
-const Header = styled.h1`
-  font-size: 28px;
-  color: #333;
-`;
-
-const TimelineItem = styled.div`
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
+import PostCard from './components/PostCard'; // ✅ 追加
 
 const LoadingMessage = styled.p`
   font-size: 20px;
@@ -82,7 +59,6 @@ interface Timeline {
 
 const MAX_CONTENT_LENGTH = 140;
 
-// 🔒 HTMLエスケープ（XSS対策）
 const escapeHTML = (str: string) =>
   str.replace(/&/g, '&amp;')
      .replace(/</g, '&lt;')
@@ -168,9 +144,8 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const confirmDelete = (id: number) => {
-    setDeleteTargetId(id);
-  };
+  const confirmDelete = (id: number) => setDeleteTargetId(id);
+  const cancelDelete = () => setDeleteTargetId(null);
 
   const executeDelete = async () => {
     if (!deleteTargetId) return;
@@ -194,10 +169,6 @@ const TimeLine: React.FC = () => {
       setDeleteTargetId(null);
       setTimeout(() => setSuccessMessage(null), 3000);
     }
-  };
-
-  const cancelDelete = () => {
-    setDeleteTargetId(null);
   };
 
   const handlePopupSubmit = async () => {
@@ -232,14 +203,7 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  if (isLoggedIn === null) {
-    return (
-      <Container>
-        <LoadingMessage>ロード中です...</LoadingMessage>
-      </Container>
-    );
-  }
-
+  if (isLoggedIn === null) return <LoadingMessage>ロード中です...</LoadingMessage>;
   if (!isLoggedIn) {
     window.location.href = 'http://localhost:3000/users/sign_in';
     return null;
@@ -249,60 +213,38 @@ const TimeLine: React.FC = () => {
     <>
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
 
-      <Container>
-        <Header>タイムライン</Header>
-        <PostForm>
-          <textarea
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            placeholder="新しい投稿を書く..."
-          />
-          <div style={{ fontSize: '12px', color: newContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
-            {newContent.length} / {MAX_CONTENT_LENGTH}
-          </div>
-          <button onClick={handlePost}>投稿する</button>
-        </PostForm>
+      <PostForm>
+        <textarea
+          value={newContent}
+          onChange={(e) => setNewContent(e.target.value)}
+          placeholder="新しい投稿を書く..."
+        />
+        <div style={{ fontSize: '12px', color: newContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
+          {newContent.length} / {MAX_CONTENT_LENGTH}
+        </div>
+        <button onClick={handlePost}>投稿する</button>
+      </PostForm>
 
-        {timelines.map((timeline) => (
-          <TimelineItem
-            key={timeline.id}
-            onClick={() => navigate(`/timelines/${timeline.id}`)}
-          >
-            <div>
-              <strong>
-                <a href={`/profiles/${timeline.user.id}`}>
-                  {timeline.user.name}
-                </a>
-              </strong>{' '}
-              {timeline.user.beebits_name}
-            </div>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
-            <div>いいね数: {timeline.favorites_count}</div>
-            <div>リプライ数: {timeline.total_replies_count}</div>
-            {currentUserId === timeline.user.id && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  confirmDelete(timeline.id);
-                }}
-              >
-                削除
-              </button>
-            )}
-            <button onClick={(e) => {
-              e.stopPropagation();
-              setPopupTarget(timeline);
-              setShowPopup(true);
-            }}>リプライ</button>
-          </TimelineItem>
-        ))}
-      </Container>
+      {timelines.map((timeline) => (
+        <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
+          <PostCard
+            userName={timeline.user.name}
+            userId={timeline.user.beebits_name}
+            content={timeline.content}
+            favoriteCount={timeline.favorites_count}
+            replyCount={timeline.total_replies_count}
+            isLiked={timeline.is_liked}
+          />
+        </div>
+      ))}
 
       {showPopup && popupTarget && (
         <ModalOverlay>
           <ModalContent>
             <h4>リプライ対象：</h4>
-            <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
+            <p>
+              <strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）
+            </p>
             <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
             <textarea
               value={popupContent}
@@ -314,7 +256,9 @@ const TimeLine: React.FC = () => {
               {popupContent.length} / {MAX_CONTENT_LENGTH}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>
+                キャンセル
+              </button>
               <button onClick={handlePopupSubmit}>リプライする</button>
             </div>
           </ModalContent>
@@ -326,7 +270,9 @@ const TimeLine: React.FC = () => {
           <ModalContent>
             <p>この投稿を削除しますか？</p>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={cancelDelete} style={{ marginRight: '10px' }}>キャンセル</button>
+              <button onClick={cancelDelete} style={{ marginRight: '10px' }}>
+                キャンセル
+              </button>
               <button onClick={executeDelete}>削除する</button>
             </div>
           </ModalContent>
