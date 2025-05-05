@@ -7,31 +7,61 @@ import InfoColumn from './InfoColumn';
 
 const LayoutContainer = styled.div`
   display: flex;
-  width: 100vw;
+  min-width: 768px;
+  width: 100%;
   height: 100vh;
   background-color: #f5f8fa;
-  overflow: hidden;
-  gap: 3px;
+  overflow-x: hidden;
 `;
 
-const ColumnWrapper = styled.div<{ width: string }>`
-  flex: 0 0 ${(props) => props.width};
+const MenuColumnWrapper = styled.div`
+  flex: 0 0 20%;
   padding: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 60px; /* アイコン表示幅 */
+    padding: 5px;
+  }
+
+  @media (max-width: 768px) {
+    display: none; /* 完全非表示 */
+  }
+`;
+
+const TimelineWrapper = styled.div`
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: visible; /* 独立スクロール禁止 */
+`;
+
+const InfoColumnWrapper = styled.div`
+  flex: 0 0 20%;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: 100vh;
+
+  @media (max-width: 1024px) {
+    display: none; /* 小画面では非表示 */
+  }
 `;
 
 const AppLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <LayoutContainer>
-      <ColumnWrapper width="20%">
+      <MenuColumnWrapper>
         <MenuColumn />
-      </ColumnWrapper>
-      <ColumnWrapper width="60%">
+      </MenuColumnWrapper>
+
+      <TimelineWrapper>
         <TimelineColumn>{children}</TimelineColumn>
-      </ColumnWrapper>
-      <ColumnWrapper width="20%">
+      </TimelineWrapper>
+
+      <InfoColumnWrapper>
         <InfoColumn />
-      </ColumnWrapper>
+      </InfoColumnWrapper>
     </LayoutContainer>
   );
 };

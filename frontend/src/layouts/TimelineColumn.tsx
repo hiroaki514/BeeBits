@@ -2,16 +2,47 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
-  min-height: 100%;
+const TimelineContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+`;
+
+const InnerContainer = styled.div`
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  box-sizing: border-box;
+
+  /* スクロールバーのスタイルを必要に応じて追加 */
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
 `;
 
 const TimelineColumn: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  return <Wrapper>{children}</Wrapper>;
+  return (
+    <TimelineContainer>
+      <InnerContainer>{children}</InnerContainer>
+    </TimelineContainer>
+  );
 };
 
 export default TimelineColumn;

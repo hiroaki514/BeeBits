@@ -1,25 +1,24 @@
-// frontend/src/layouts/InfoColumn.tsx
 import React from 'react';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+const InfoContainer = styled.div`
+  background-color: #f0f4f8;
   height: 100%;
-`;
+  border-radius: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  font-size: 16px;
 
-const Placeholder = styled.div`
-  font-size: 14px;
-  color: #666;
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const InfoColumn: React.FC = () => {
   return (
-    <Wrapper>
-      <Placeholder>インフォメーションエリア（将来実装）</Placeholder>
-    </Wrapper>
+    <InfoContainer>
+      インフォメーションエリア（将来実装）
+    </InfoContainer>
   );
 };
 
