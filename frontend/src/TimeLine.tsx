@@ -1,20 +1,7 @@
-// frontend/src/TimeLine.tsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const TimelineItem = styled.div`
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
+import PostCard from './components/PostCard'; // ✅ 追加
 
 const LoadingMessage = styled.p`
   font-size: 20px;
@@ -239,36 +226,16 @@ const TimeLine: React.FC = () => {
       </PostForm>
 
       {timelines.map((timeline) => (
-        <TimelineItem key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)}>
-          <div>
-            <strong>
-              <a href={`/profiles/${timeline.user.id}`}>{timeline.user.name}</a>
-            </strong>{' '}
-            {timeline.user.beebits_name}
-          </div>
-          <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
-          <div>いいね数: {timeline.favorites_count}</div>
-          <div>リプライ数: {timeline.total_replies_count}</div>
-          {currentUserId === timeline.user.id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                confirmDelete(timeline.id);
-              }}
-            >
-              削除
-            </button>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setPopupTarget(timeline);
-              setShowPopup(true);
-            }}
-          >
-            リプライ
-          </button>
-        </TimelineItem>
+        <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
+          <PostCard
+            userName={timeline.user.name}
+            userId={timeline.user.beebits_name}
+            content={timeline.content}
+            favoriteCount={timeline.favorites_count}
+            replyCount={timeline.total_replies_count}
+            isLiked={timeline.is_liked}
+          />
+        </div>
       ))}
 
       {showPopup && popupTarget && (

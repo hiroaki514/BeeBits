@@ -1,47 +1,46 @@
 // frontend/src/layouts/TimelineColumn.tsx
 import React from 'react';
 import styled from 'styled-components';
+import PostCard from '../components/PostCard';
 
-const TimelineContainer = styled.div`
+interface Timeline {
+  id: number;
+  content: string;
+  favorites_count: number;
+  total_replies_count: number;
+  is_liked: boolean;
+  user: {
+    id: number;
+    name: string;
+    beebits_name: string;
+  };
+}
+
+const Container = styled.div`
   width: 100%;
-  height: 100%;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    padding: 8px;
-  }
 `;
 
-const InnerContainer = styled.div`
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 8px;
-  box-sizing: border-box;
+interface Props {
+  timelines?: Timeline[]; // 任意のpropsとして保持
+}
 
-  /* スクロールバーのスタイルを必要に応じて追加 */
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-  }
-`;
-
-const TimelineColumn: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const TimelineColumn: React.FC<React.PropsWithChildren<Props>> = ({ timelines, children }) => {
   return (
-    <TimelineContainer>
-      <InnerContainer>{children}</InnerContainer>
-    </TimelineContainer>
+    <Container>
+      {Array.isArray(timelines) &&
+        timelines.map((timeline) => (
+          <PostCard
+            key={timeline.id}
+            userName={timeline.user.name}
+            userId={timeline.user.beebits_name}
+            content={timeline.content}
+            favoriteCount={timeline.favorites_count}
+            replyCount={timeline.total_replies_count}
+            isLiked={timeline.is_liked}
+          />
+        ))}
+      {children}
+    </Container>
   );
 };
 

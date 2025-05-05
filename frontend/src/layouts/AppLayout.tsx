@@ -11,7 +11,7 @@ const LayoutContainer = styled.div`
   width: 100%;
   height: 100vh;
   background-color: #f5f8fa;
-  overflow-x: hidden;
+  overflow: hidden; /* ✅ 全体スクロール禁止 */
 `;
 
 const MenuColumnWrapper = styled.div`
@@ -33,7 +33,9 @@ const TimelineWrapper = styled.div`
   flex: 1;
   padding: 10px;
   box-sizing: border-box;
-  overflow: visible; /* 独立スクロール禁止 */
+  height: 100%;         /* ✅ 親に合わせる */
+  overflow-y: auto;     /* ✅ タイムラインのみ縦スクロール許可 */
+  overflow-x: hidden;   /* ✅ 横スクロール禁止 */
 `;
 
 const InfoColumnWrapper = styled.div`

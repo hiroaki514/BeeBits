@@ -10,8 +10,17 @@ import {
 import TimeLine from './TimeLine';
 import TimelineDetail from './TimelineDetail';
 import AppLayout from './layouts/AppLayout';
+import { createGlobalStyle } from 'styled-components';
 
-// ログイン状態を確認してリダイレクト処理を行うコンポーネント
+const GlobalStyle = createGlobalStyle`
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+`;
+
 const LoginRedirect = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -38,7 +47,6 @@ const LoginRedirect = () => {
   );
 };
 
-// Layout経由で children を表示
 const LayoutWithOutlet = () => (
   <AppLayout>
     <Outlet />
@@ -47,11 +55,10 @@ const LayoutWithOutlet = () => (
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <GlobalStyle />
     <Router>
       <Routes>
-        {/* 未ログインリダイレクト */}
         <Route path="/" element={<LoginRedirect />} />
-        {/* AppLayout経由でページ表示 */}
         <Route element={<LayoutWithOutlet />}>
           <Route path="/timelines" element={<TimeLine />} />
           <Route path="/timelines/:id" element={<TimelineDetail />} />
