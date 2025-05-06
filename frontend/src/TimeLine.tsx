@@ -22,23 +22,6 @@ const SuccessMessage = styled.div`
   z-index: 1000;
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-`;
-
-const ModalContent = styled.div`
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-`;
-
 interface Timeline {
   id: number;
   content: string;
@@ -51,25 +34,13 @@ interface Timeline {
 
 const MAX_CONTENT_LENGTH = 140;
 
-const escapeHTML = (str: string) =>
-  str.replace(/&/g, '&amp;')
-     .replace(/</g, '&lt;')
-     .replace(/>/g, '&gt;')
-     .replace(/"/g, '&quot;')
-     .replace(/'/g, '&#39;');
-
 const TimeLine: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
+  const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
-
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
-  const [popupContent, setPopupContent] = useState('');
-
-  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/session', {
@@ -101,7 +72,7 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const handlePost = async (newContent: string) => {
+  const handlePost = async () => {
     if (!newContent.trim()) {
       setSuccessMessage('投稿内容を入力してください');
       return;
@@ -122,6 +93,7 @@ const TimeLine: React.FC = () => {
       if (response.ok) {
         const newTimeline = await response.json();
         setTimelines((prev) => [newTimeline, ...prev]);
+        setNewContent('');
         setSuccessMessage('投稿が作成されました');
       } else {
         setSuccessMessage('投稿に失敗しました');
@@ -131,65 +103,6 @@ const TimeLine: React.FC = () => {
       setSuccessMessage('投稿中にエラーが発生しました');
     } finally {
       setTimeout(() => setSuccessMessage(null), 3000);
-    }
-  };
-
-  const confirmDelete = (id: number) => setDeleteTargetId(id);
-  const cancelDelete = () => setDeleteTargetId(null);
-
-  const executeDelete = async () => {
-    if (!deleteTargetId) return;
-
-    try {
-      const response = await fetch(`http://localhost:3000/api/timelines/${deleteTargetId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        await loadTimelines();
-        setSuccessMessage('投稿が削除されました');
-      } else {
-        setSuccessMessage('削除に失敗しました');
-      }
-    } catch (error) {
-      console.error('削除エラー:', error);
-      setSuccessMessage('削除中にエラーが発生しました');
-    } finally {
-      setDeleteTargetId(null);
-      setTimeout(() => setSuccessMessage(null), 3000);
-    }
-  };
-
-  const handlePopupSubmit = async () => {
-    if (!popupTarget || !popupContent.trim()) {
-      setSuccessMessage('投稿内容を入力してください');
-      return;
-    }
-    if (popupContent.length > MAX_CONTENT_LENGTH) {
-      setSuccessMessage('投稿は140文字以内で入力してください');
-      return;
-    }
-
-    try {
-      const response = await fetch(`http://localhost:3000/api/timelines`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          content: popupContent,
-          parent_id: popupTarget.id,
-        }),
-      });
-
-      if (response.ok) {
-        setPopupContent('');
-        setShowPopup(false);
-        await loadTimelines();
-      }
-    } catch (e) {
-      setSuccessMessage('リプライ投稿に失敗しました');
-      setShowPopup(false);
     }
   };
 
@@ -205,8 +118,11 @@ const TimeLine: React.FC = () => {
 
       <PostForm
         onSubmit={handlePost}
-        placeholder="新しい投稿を書く..."
+        value={newContent}
+        onChange={setNewContent}
         submitLabel="投稿する"
+        placeholder="新しい投稿を書く..."
+        disabled={false}
       />
 
       {timelines.map((timeline) => (
@@ -223,47 +139,6 @@ const TimeLine: React.FC = () => {
           />
         </div>
       ))}
-
-      {showPopup && popupTarget && (
-        <ModalOverlay>
-          <ModalContent>
-            <h4>リプライ対象：</h4>
-            <p>
-              <strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）
-            </p>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
-            <textarea
-              value={popupContent}
-              onChange={(e) => setPopupContent(e.target.value)}
-              rows={4}
-              style={{ width: '100%', marginBottom: '10px' }}
-            />
-            <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
-              {popupContent.length} / {MAX_CONTENT_LENGTH}
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowPopup(false)} style={{ marginRight: '10px' }}>
-                キャンセル
-              </button>
-              <button onClick={handlePopupSubmit}>リプライする</button>
-            </div>
-          </ModalContent>
-        </ModalOverlay>
-      )}
-
-      {deleteTargetId && (
-        <ModalOverlay>
-          <ModalContent>
-            <p>この投稿を削除しますか？</p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={cancelDelete} style={{ marginRight: '10px' }}>
-                キャンセル
-              </button>
-              <button onClick={executeDelete}>削除する</button>
-            </div>
-          </ModalContent>
-        </ModalOverlay>
-      )}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaHeart, FaRegHeart, FaRegCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
 
 interface PostCardProps {
   userName: string;
@@ -8,13 +8,10 @@ interface PostCardProps {
   content: string;
   favoriteCount: number;
   replyCount: number;
-  retweetCount?: number;
-  isLiked?: boolean;
-  isOwnPost?: boolean;
-  postId?: number;
-  avatarUrl?: string;
-  onDelete?: () => void;
-  onReport?: () => void;
+  isLiked: boolean;
+  isOwnPost: boolean;
+  postId: number;
+  onDelete?: (id: number) => void;
 }
 
 const Card = styled.div`
@@ -23,7 +20,6 @@ const Card = styled.div`
   border-bottom: 1px solid #e1e8ed;
   display: flex;
   gap: 12px;
-  position: relative;
 `;
 
 const Avatar = styled.div`
@@ -73,27 +69,21 @@ const IconWrap = styled.div`
   align-items: center;
   gap: 4px;
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
-const OptionsWrapper = styled.div`
+const MenuPopup = styled.div`
   position: absolute;
-  top: 40px;
-  right: 16px;
   background: white;
   border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 8px;
   z-index: 100;
-  padding: 8px 0;
-  min-width: 160px;
-`;
-
-const OptionItem = styled.div`
-  padding: 8px 16px;
-  cursor: pointer;
-  &:hover {
-    background-color: #f5f8fa;
-  }
+  font-size: 14px;
 `;
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -102,31 +92,28 @@ const PostCard: React.FC<PostCardProps> = ({
   content,
   favoriteCount,
   replyCount,
-  retweetCount = 0,
-  isLiked = false,
-  isOwnPost = false,
+  isLiked,
+  isOwnPost,
+  postId,
   onDelete,
-  onReport,
 }) => {
-  const [showOptions, setShowOptions] = useState(false);
-  const [liked, setLiked] = useState(isLiked);
-  const [retweeted, setRetweeted] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  const optionsRef = useRef<HTMLDivElement>(null);
+  const toggleMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (optionsRef.current && !optionsRef.current.contains(e.target as Node)) {
-        setShowOptions(false);
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
       }
     };
-    if (showOptions) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showOptions]);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <Card>
@@ -134,39 +121,30 @@ const PostCard: React.FC<PostCardProps> = ({
       <ContentWrapper>
         <Header>
           <UserInfo>
-            {userName} <span>{userId}</span>
+            {userName} <span>@{userId}</span>
           </UserInfo>
-          <div onClick={(e) => { e.stopPropagation(); setShowOptions((prev) => !prev); }}>
-            <FaEllipsisH style={{ cursor: 'pointer' }} />
+          <div style={{ position: 'relative' }}>
+            <FaEllipsisH onClick={toggleMenu} style={{ cursor: 'pointer' }} />
+            {showMenu && (
+              <MenuPopup ref={menuRef}>
+                {isOwnPost ? (
+                  <div onClick={(e) => { e.stopPropagation(); onDelete?.(postId); setShowMenu(false); }}>
+                    投稿を削除
+                  </div>
+                ) : (
+                  <div onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}>
+                    違反を報告
+                  </div>
+                )}
+              </MenuPopup>
+            )}
           </div>
-          {showOptions && (
-            <OptionsWrapper ref={optionsRef} onClick={(e) => e.stopPropagation()}>
-              {isOwnPost ? (
-                <>
-                  <OptionItem onClick={onDelete}>削除</OptionItem>
-                  <OptionItem>プロフィールに固定</OptionItem>
-                  <OptionItem>返信可能ユーザーを変更</OptionItem>
-                </>
-              ) : (
-                <OptionItem onClick={onReport}>この投稿を通報</OptionItem>
-              )}
-            </OptionsWrapper>
-          )}
         </Header>
         <PostText>{content}</PostText>
-        <ActionRow>
-          <IconWrap onClick={(e) => e.stopPropagation()}>
-            <FaRegCommentDots />
-            {replyCount}
-          </IconWrap>
-          <IconWrap onClick={(e) => { e.stopPropagation(); setRetweeted(!retweeted); }}>
-            <FaRetweet color={retweeted ? 'green' : undefined} />
-            {retweetCount}
-          </IconWrap>
-          <IconWrap onClick={(e) => { e.stopPropagation(); setLiked(!liked); }}>
-            {liked ? <FaHeart color="red" /> : <FaRegHeart />}
-            {favoriteCount}
-          </IconWrap>
+        <ActionRow onClick={(e) => e.stopPropagation()}>
+          <IconWrap><FaCommentDots /> {replyCount}</IconWrap>
+          <IconWrap><FaRetweet /> 0</IconWrap>
+          <IconWrap>{isLiked ? <FaHeart color="red" /> : <FaRegHeart />} {favoriteCount}</IconWrap>
         </ActionRow>
       </ContentWrapper>
     </Card>
