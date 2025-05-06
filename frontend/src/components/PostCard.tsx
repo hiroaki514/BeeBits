@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaHeart, FaReply, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import { FaEllipsisH } from 'react-icons/fa';
+import PopupMenu from './PopupMenu';
+import PostActions from './PostActions';
 
 interface PostCardProps {
   userName: string;
@@ -8,9 +10,12 @@ interface PostCardProps {
   content: string;
   favoriteCount: number;
   replyCount: number;
-  retweetCount?: number; // 今回はUIのみ対応
-  isLiked?: boolean;     // 仮：アイコン切り替えの有無
-  avatarUrl?: string;    // 将来対応用、今はダミーでOK
+  retweetCount?: number;
+  isLiked?: boolean;
+  avatarUrl?: string;
+  postId: number;
+  isOwnPost: boolean;
+  onDelete?: (postId: number) => void;
 }
 
 const Card = styled.div`
@@ -19,6 +24,7 @@ const Card = styled.div`
   border-bottom: 1px solid #e1e8ed;
   display: flex;
   gap: 12px;
+  position: relative;
 `;
 
 const Avatar = styled.div`
@@ -55,19 +61,8 @@ const PostText = styled.div`
   font-size: 15px;
 `;
 
-const ActionRow = styled.div`
-  display: flex;
-  gap: 30px;
-  margin-top: 8px;
-  font-size: 14px;
-  color: #657786;
-`;
-
-const IconWrap = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
+const MenuWrapper = styled.div`
+  position: relative;
 `;
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -79,7 +74,24 @@ const PostCard: React.FC<PostCardProps> = ({
   retweetCount = 0,
   isLiked = false,
   avatarUrl,
+  postId,
+  isOwnPost,
+  onDelete,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleMenuToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMenuOpen((prev) => !prev);
+  };
+
+  const handleDeleteClick = () => {
+    if (onDelete) {
+      onDelete(postId);
+      setMenuOpen(false);
+    }
+  };
+
   return (
     <Card>
       <Avatar />
@@ -88,14 +100,25 @@ const PostCard: React.FC<PostCardProps> = ({
           <UserInfo>
             {userName} <span>{userId}</span>
           </UserInfo>
-          <FaEllipsisH />
+          <MenuWrapper>
+            <FaEllipsisH style={{ cursor: 'pointer' }} onClick={handleMenuToggle} />
+            {menuOpen && (
+              <PopupMenu
+                isOwnPost={isOwnPost}
+                onClose={() => setMenuOpen(false)}
+                onDelete={handleDeleteClick}
+              />
+            )}
+          </MenuWrapper>
         </Header>
         <PostText>{content}</PostText>
-        <ActionRow>
-          <IconWrap><FaReply /> {replyCount}</IconWrap>
-          <IconWrap><FaRetweet /> {retweetCount}</IconWrap>
-          <IconWrap><FaHeart color={isLiked ? 'red' : undefined} /> {favoriteCount}</IconWrap>
-        </ActionRow>
+
+        <PostActions
+          replyCount={replyCount}
+          retweetCount={retweetCount}
+          favoriteCount={favoriteCount}
+          isLiked={isLiked}
+        />
       </ContentWrapper>
     </Card>
   );

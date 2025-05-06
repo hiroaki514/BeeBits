@@ -1,4 +1,3 @@
-// frontend/src/layouts/AppLayout.tsx
 import React from 'react';
 import styled from 'styled-components';
 import MenuColumn from './MenuColumn';
@@ -9,9 +8,8 @@ const LayoutContainer = styled.div`
   display: flex;
   min-width: 768px;
   width: 100%;
-  height: 100vh;
   background-color: #f5f8fa;
-  overflow: hidden; /* ✅ 全体スクロール禁止 */
+  overflow: visible; /* ✅ 全体スクロールを許可（中央にバーが出ない） */
 `;
 
 const MenuColumnWrapper = styled.div`
@@ -20,12 +18,12 @@ const MenuColumnWrapper = styled.div`
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
-    flex: 0 0 60px; /* アイコン表示幅 */
+    flex: 0 0 60px;
     padding: 5px;
   }
 
   @media (max-width: 768px) {
-    display: none; /* 完全非表示 */
+    display: none;
   }
 `;
 
@@ -33,20 +31,19 @@ const TimelineWrapper = styled.div`
   flex: 1;
   padding: 10px;
   box-sizing: border-box;
-  height: 100%;         /* ✅ 親に合わせる */
-  overflow-y: auto;     /* ✅ タイムラインのみ縦スクロール許可 */
-  overflow-x: hidden;   /* ✅ 横スクロール禁止 */
+  height: auto;        /* ✅ 高さ制限を解除 */
+  overflow: visible;   /* ✅ 中央にスクロールバーを出さない */
 `;
 
 const InfoColumnWrapper = styled.div`
   flex: 0 0 20%;
   padding: 10px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: auto;    /* ✅ 情報カラムだけスクロール可能にする */
   max-height: 100vh;
 
   @media (max-width: 1024px) {
-    display: none; /* 小画面では非表示 */
+    display: none;
   }
 `;
 
