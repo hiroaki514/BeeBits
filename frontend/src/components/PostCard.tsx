@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaHeart, FaRegCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import { FaEllipsisH } from 'react-icons/fa';
 import PopupMenu from './PopupMenu';
+import PostActions from './PostActions';
 
 interface PostCardProps {
   userName: string;
@@ -60,21 +61,6 @@ const PostText = styled.div`
   font-size: 15px;
 `;
 
-const ActionRow = styled.div`
-  display: flex;
-  gap: 30px;
-  margin-top: 8px;
-  font-size: 14px;
-  color: #657786;
-`;
-
-const IconWrap = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-`;
-
 const MenuWrapper = styled.div`
   position: relative;
 `;
@@ -126,11 +112,13 @@ const PostCard: React.FC<PostCardProps> = ({
           </MenuWrapper>
         </Header>
         <PostText>{content}</PostText>
-        <ActionRow>
-          <IconWrap><FaRegCommentDots /> {replyCount}</IconWrap>
-          <IconWrap><FaRetweet /> {retweetCount}</IconWrap>
-          <IconWrap><FaHeart color={isLiked ? 'red' : undefined} /> {favoriteCount}</IconWrap>
-        </ActionRow>
+
+        <PostActions
+          replyCount={replyCount}
+          retweetCount={retweetCount}
+          favoriteCount={favoriteCount}
+          isLiked={isLiked}
+        />
       </ContentWrapper>
     </Card>
   );
