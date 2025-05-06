@@ -1,29 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
-import PostList from './components/PostList';
+import ConfirmModal from './components/ConfirmModal';
 
 const LoadingMessage = styled.p`
   font-size: 20px;
   color: #666;
-`;
-
-const PostFormWrapper = styled.div`
-  margin: 20px 0;
-`;
-
-const SuccessMessage = styled.div`
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
 `;
 
 interface Timeline {
@@ -45,10 +29,13 @@ const TimeLine: React.FC = () => {
   const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/session', { credentials: 'include' })
-      .then((res) => res.json())
+    fetch('http://localhost:3000/api/session', {
+      credentials: 'include',
+    })
+      .then((response) => response.json())
       .then((data) => {
         setIsLoggedIn(data.logged_in);
         setCurrentUserId(data.user?.id || null);
@@ -108,16 +95,30 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const handleDelete = async (targetId: number) => {
+  const confirmDelete = (id: number) => setDeleteTargetId(id);
+  const cancelDelete = () => setDeleteTargetId(null);
+
+  const executeDelete = async () => {
+    if (!deleteTargetId) return;
+
     try {
-      const response = await fetch(`http://localhost:3000/api/timelines/${targetId}`, {
+      const response = await fetch(`http://localhost:3000/api/timelines/${deleteTargetId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (!response.ok) throw new Error();
-      await loadTimelines();
-    } catch {
-      setSuccessMessage('削除に失敗しました');
+
+      if (response.ok) {
+        await loadTimelines();
+        setSuccessMessage('投稿が削除されました');
+      } else {
+        setSuccessMessage('削除に失敗しました');
+      }
+    } catch (error) {
+      console.error('削除エラー:', error);
+      setSuccessMessage('削除中にエラーが発生しました');
+    } finally {
+      setDeleteTargetId(null);
+      setTimeout(() => setSuccessMessage(null), 3000);
     }
   };
 
@@ -129,23 +130,35 @@ const TimeLine: React.FC = () => {
 
   return (
     <>
-      {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+      <PostForm
+        onSubmit={handlePost}
+        value={newContent}
+        onChange={setNewContent}
+        submitLabel="投稿する"
+        placeholder="新しい投稿を書く..."
+      />
 
-      <PostFormWrapper>
-        <PostForm
-          onSubmit={handlePost}
-          value={newContent}
-          onChange={setNewContent}
-          submitLabel="投稿する"
-          placeholder="新しい投稿を書く..."
-          disabled={false}
-        />
-      </PostFormWrapper>
+      {timelines.map((timeline) => (
+        <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
+          <PostCard
+            userName={timeline.user.name}
+            userId={timeline.user.beebits_name}
+            content={timeline.content}
+            favoriteCount={timeline.favorites_count}
+            replyCount={timeline.total_replies_count}
+            isLiked={timeline.is_liked}
+            postId={timeline.id}
+            isOwnPost={timeline.user.id === currentUserId}
+            onDelete={confirmDelete}
+          />
+        </div>
+      ))}
 
-      <PostList
-        posts={timelines}
-        currentUserId={currentUserId}
-        onDelete={handleDelete}
+      <ConfirmModal
+        visible={deleteTargetId !== null}
+        message="この投稿を削除しますか？"
+        onCancel={cancelDelete}
+        onConfirm={executeDelete}
       />
     </>
   );
