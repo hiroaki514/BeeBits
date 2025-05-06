@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
-import PostList from './components/PostList';
+import ConfirmModal from './components/ConfirmModal';
 
 interface Timeline {
   id: number;
@@ -27,6 +27,7 @@ const TimelineDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -77,9 +78,19 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
-  const handleDelete = async (targetId: number) => {
+  const confirmDelete = (postId: number) => {
+    setDeleteTargetId(postId);
+  };
+
+  const cancelDelete = () => {
+    setDeleteTargetId(null);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTargetId) return;
+
     try {
-      const response = await fetch(`http://localhost:3000/api/timelines/${targetId}`, {
+      const response = await fetch(`http://localhost:3000/api/timelines/${deleteTargetId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -87,7 +98,27 @@ const TimelineDetail: React.FC = () => {
       navigate('/timelines');
     } catch {
       setError('削除に失敗しました');
+    } finally {
+      setDeleteTargetId(null);
     }
+  };
+
+  const renderReplies = (replies: Timeline[]) => {
+    return replies.map((reply) => (
+      <div key={reply.id} style={{ marginTop: 20 }}>
+        <PostCard
+          userName={reply.user.name}
+          userId={reply.user.beebits_name}
+          content={reply.content}
+          favoriteCount={reply.favorites_count}
+          replyCount={reply.total_replies_count ?? 0}
+          isLiked={reply.is_liked}
+          postId={reply.id}
+          isOwnPost={reply.user.id === currentUserId}
+          onDelete={confirmDelete}
+        />
+      </div>
+    ));
   };
 
   if (loading) return <div>読み込み中...</div>;
@@ -110,7 +141,7 @@ const TimelineDetail: React.FC = () => {
         isLiked={timeline.is_liked}
         postId={timeline.id}
         isOwnPost={timeline.user.id === currentUserId}
-        onDelete={handleDelete}
+        onDelete={confirmDelete}
       />
 
       <div style={{ marginTop: 30 }}>
@@ -128,15 +159,18 @@ const TimelineDetail: React.FC = () => {
       <div style={{ marginTop: 40 }}>
         <h3>リプライ一覧</h3>
         {timeline.replies && timeline.replies.length > 0 ? (
-          <PostList
-            posts={timeline.replies}
-            currentUserId={currentUserId}
-            onDelete={handleDelete}
-          />
+          renderReplies(timeline.replies)
         ) : (
           <div>リプライはありません。</div>
         )}
       </div>
+
+      <ConfirmModal
+        visible={deleteTargetId !== null}
+        message="この投稿を削除しますか？"
+        onCancel={cancelDelete}
+        onConfirm={executeDelete}
+      />
     </div>
   );
 };
