@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
+import PostList from './components/PostList';
 
 const LoadingMessage = styled.p`
   font-size: 20px;
   color: #666;
+`;
+
+const PostFormWrapper = styled.div`
+  margin: 20px 0;
 `;
 
 const SuccessMessage = styled.div`
@@ -43,10 +47,8 @@ const TimeLine: React.FC = () => {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/session', {
-      credentials: 'include',
-    })
-      .then((response) => response.json())
+    fetch('http://localhost:3000/api/session', { credentials: 'include' })
+      .then((res) => res.json())
       .then((data) => {
         setIsLoggedIn(data.logged_in);
         setCurrentUserId(data.user?.id || null);
@@ -106,6 +108,19 @@ const TimeLine: React.FC = () => {
     }
   };
 
+  const handleDelete = async (targetId: number) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/timelines/${targetId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error();
+      await loadTimelines();
+    } catch {
+      setSuccessMessage('削除に失敗しました');
+    }
+  };
+
   if (isLoggedIn === null) return <LoadingMessage>ロード中です...</LoadingMessage>;
   if (!isLoggedIn) {
     window.location.href = 'http://localhost:3000/users/sign_in';
@@ -116,29 +131,22 @@ const TimeLine: React.FC = () => {
     <>
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
 
-      <PostForm
-        onSubmit={handlePost}
-        value={newContent}
-        onChange={setNewContent}
-        submitLabel="投稿する"
-        placeholder="新しい投稿を書く..."
-        disabled={false}
-      />
+      <PostFormWrapper>
+        <PostForm
+          onSubmit={handlePost}
+          value={newContent}
+          onChange={setNewContent}
+          submitLabel="投稿する"
+          placeholder="新しい投稿を書く..."
+          disabled={false}
+        />
+      </PostFormWrapper>
 
-      {timelines.map((timeline) => (
-        <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
-          <PostCard
-            userName={timeline.user.name}
-            userId={timeline.user.beebits_name}
-            content={timeline.content}
-            favoriteCount={timeline.favorites_count}
-            replyCount={timeline.total_replies_count}
-            isLiked={timeline.is_liked}
-            postId={timeline.id}
-            isOwnPost={timeline.user.id === currentUserId}
-          />
-        </div>
-      ))}
+      <PostList
+        posts={timelines}
+        currentUserId={currentUserId}
+        onDelete={handleDelete}
+      />
     </>
   );
 };

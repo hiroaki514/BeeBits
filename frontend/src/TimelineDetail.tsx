@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PostCard from './components/PostCard';
 import PostForm from './components/PostForm';
+import PostList from './components/PostList';
 
 interface Timeline {
   id: number;
@@ -89,24 +90,6 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
-  const renderReplies = (replies: Timeline[]) => {
-    return replies.map((reply) => (
-      <div key={reply.id} style={{ marginTop: 20 }}>
-        <PostCard
-          userName={reply.user.name}
-          userId={reply.user.beebits_name}
-          content={reply.content}
-          favoriteCount={reply.favorites_count}
-          replyCount={reply.total_replies_count ?? 0}
-          isLiked={reply.is_liked}
-          postId={reply.id}
-          isOwnPost={reply.user.id === currentUserId}
-          onDelete={handleDelete}
-        />
-      </div>
-    ));
-  };
-
   if (loading) return <div>読み込み中...</div>;
   if (error) return <div>{error}</div>;
   if (!timeline) return <div>投稿が見つかりません。</div>;
@@ -145,7 +128,11 @@ const TimelineDetail: React.FC = () => {
       <div style={{ marginTop: 40 }}>
         <h3>リプライ一覧</h3>
         {timeline.replies && timeline.replies.length > 0 ? (
-          renderReplies(timeline.replies)
+          <PostList
+            posts={timeline.replies}
+            currentUserId={currentUserId}
+            onDelete={handleDelete}
+          />
         ) : (
           <div>リプライはありません。</div>
         )}

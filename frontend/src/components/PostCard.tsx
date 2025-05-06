@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaHeart, FaRegHeart, FaCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import { FaHeart, FaRegCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import PopupMenu from './PopupMenu';
 
 interface PostCardProps {
   userName: string;
@@ -8,10 +9,12 @@ interface PostCardProps {
   content: string;
   favoriteCount: number;
   replyCount: number;
-  isLiked: boolean;
-  isOwnPost: boolean;
+  retweetCount?: number;
+  isLiked?: boolean;
+  avatarUrl?: string;
   postId: number;
-  onDelete?: (id: number) => void;
+  isOwnPost: boolean;
+  onDelete?: (postId: number) => void;
 }
 
 const Card = styled.div`
@@ -20,6 +23,7 @@ const Card = styled.div`
   border-bottom: 1px solid #e1e8ed;
   display: flex;
   gap: 12px;
+  position: relative;
 `;
 
 const Avatar = styled.div`
@@ -69,21 +73,10 @@ const IconWrap = styled.div`
   align-items: center;
   gap: 4px;
   cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
 `;
 
-const MenuPopup = styled.div`
-  position: absolute;
-  background: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  border-radius: 4px;
-  padding: 8px;
-  z-index: 100;
-  font-size: 14px;
+const MenuWrapper = styled.div`
+  position: relative;
 `;
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -92,28 +85,26 @@ const PostCard: React.FC<PostCardProps> = ({
   content,
   favoriteCount,
   replyCount,
-  isLiked,
-  isOwnPost,
+  retweetCount = 0,
+  isLiked = false,
+  avatarUrl,
   postId,
+  isOwnPost,
   onDelete,
 }) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = (e: React.MouseEvent) => {
+  const handleMenuToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowMenu((prev) => !prev);
+    setMenuOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const handleDeleteClick = () => {
+    if (onDelete) {
+      onDelete(postId);
+      setMenuOpen(false);
+    }
+  };
 
   return (
     <Card>
@@ -121,30 +112,24 @@ const PostCard: React.FC<PostCardProps> = ({
       <ContentWrapper>
         <Header>
           <UserInfo>
-            {userName} <span>@{userId}</span>
+            {userName} <span>{userId}</span>
           </UserInfo>
-          <div style={{ position: 'relative' }}>
-            <FaEllipsisH onClick={toggleMenu} style={{ cursor: 'pointer' }} />
-            {showMenu && (
-              <MenuPopup ref={menuRef}>
-                {isOwnPost ? (
-                  <div onClick={(e) => { e.stopPropagation(); onDelete?.(postId); setShowMenu(false); }}>
-                    投稿を削除
-                  </div>
-                ) : (
-                  <div onClick={(e) => { e.stopPropagation(); setShowMenu(false); }}>
-                    違反を報告
-                  </div>
-                )}
-              </MenuPopup>
+          <MenuWrapper>
+            <FaEllipsisH style={{ cursor: 'pointer' }} onClick={handleMenuToggle} />
+            {menuOpen && (
+              <PopupMenu
+                isOwnPost={isOwnPost}
+                onClose={() => setMenuOpen(false)}
+                onDelete={handleDeleteClick}
+              />
             )}
-          </div>
+          </MenuWrapper>
         </Header>
         <PostText>{content}</PostText>
-        <ActionRow onClick={(e) => e.stopPropagation()}>
-          <IconWrap><FaCommentDots /> {replyCount}</IconWrap>
-          <IconWrap><FaRetweet /> 0</IconWrap>
-          <IconWrap>{isLiked ? <FaHeart color="red" /> : <FaRegHeart />} {favoriteCount}</IconWrap>
+        <ActionRow>
+          <IconWrap><FaRegCommentDots /> {replyCount}</IconWrap>
+          <IconWrap><FaRetweet /> {retweetCount}</IconWrap>
+          <IconWrap><FaHeart color={isLiked ? 'red' : undefined} /> {favoriteCount}</IconWrap>
         </ActionRow>
       </ContentWrapper>
     </Card>
