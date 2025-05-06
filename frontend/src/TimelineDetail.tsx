@@ -94,9 +94,14 @@ const TimelineDetail: React.FC = () => {
         method: 'DELETE',
         credentials: 'include'
       });
-      if (!response.ok) throw new Error();
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        console.error('削除失敗:', error);
+        throw new Error();
+      }
       navigate('/timelines');
-    } catch {
+    } catch (err) {
+      console.error('削除エラー詳細:', err);
       setError('削除に失敗しました');
     } finally {
       setDeleteTargetId(null);

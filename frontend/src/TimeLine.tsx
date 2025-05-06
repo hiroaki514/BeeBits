@@ -26,7 +26,6 @@ const TimeLine: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
@@ -61,12 +60,12 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const handlePost = async () => {
-    if (!newContent.trim()) {
+  const handlePost = async (content: string) => {
+    if (!content.trim()) {
       setSuccessMessage('投稿内容を入力してください');
       return;
     }
-    if (newContent.length > MAX_CONTENT_LENGTH) {
+    if (content.length > MAX_CONTENT_LENGTH) {
       setSuccessMessage('投稿は140文字以内で入力してください');
       return;
     }
@@ -76,13 +75,12 @@ const TimeLine: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ content: newContent }),
+        body: JSON.stringify({ content }),
       });
 
       if (response.ok) {
         const newTimeline = await response.json();
         setTimelines((prev) => [newTimeline, ...prev]);
-        setNewContent('');
         setSuccessMessage('投稿が作成されました');
       } else {
         setSuccessMessage('投稿に失敗しました');
@@ -132,26 +130,24 @@ const TimeLine: React.FC = () => {
     <>
       <PostForm
         onSubmit={handlePost}
-        value={newContent}
-        onChange={setNewContent}
         submitLabel="投稿する"
         placeholder="新しい投稿を書く..."
       />
 
       {timelines.map((timeline) => (
-        <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
-          <PostCard
-            userName={timeline.user.name}
-            userId={timeline.user.beebits_name}
-            content={timeline.content}
-            favoriteCount={timeline.favorites_count}
-            replyCount={timeline.total_replies_count}
-            isLiked={timeline.is_liked}
-            postId={timeline.id}
-            isOwnPost={timeline.user.id === currentUserId}
-            onDelete={confirmDelete}
-          />
-        </div>
+        <PostCard
+          key={timeline.id}
+          userName={timeline.user.name}
+          userId={timeline.user.beebits_name}
+          content={timeline.content}
+          favoriteCount={timeline.favorites_count}
+          replyCount={timeline.total_replies_count}
+          isLiked={timeline.is_liked}
+          postId={timeline.id}
+          isOwnPost={timeline.user.id === currentUserId}
+          onDelete={confirmDelete}
+          onNavigate={() => navigate(`/timelines/${timeline.id}`)}
+        />
       ))}
 
       <ConfirmModal
