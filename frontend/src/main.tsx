@@ -16,8 +16,9 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden;
+    height: auto;             /* ✅ 高さ制限を解除 */
+    overflow-x: hidden;
+    overflow-y: visible;      /* ✅ ブラウザの縦スクロールを有効にする */
   }
 `;
 

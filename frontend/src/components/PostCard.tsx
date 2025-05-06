@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaHeart, FaReply, FaRetweet, FaEllipsisH } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaRegCommentDots, FaRetweet, FaEllipsisH } from 'react-icons/fa';
 
 interface PostCardProps {
   userName: string;
@@ -8,9 +8,13 @@ interface PostCardProps {
   content: string;
   favoriteCount: number;
   replyCount: number;
-  retweetCount?: number; // 今回はUIのみ対応
-  isLiked?: boolean;     // 仮：アイコン切り替えの有無
-  avatarUrl?: string;    // 将来対応用、今はダミーでOK
+  retweetCount?: number;
+  isLiked?: boolean;
+  isOwnPost?: boolean;
+  postId?: number;
+  avatarUrl?: string;
+  onDelete?: () => void;
+  onReport?: () => void;
 }
 
 const Card = styled.div`
@@ -19,6 +23,7 @@ const Card = styled.div`
   border-bottom: 1px solid #e1e8ed;
   display: flex;
   gap: 12px;
+  position: relative;
 `;
 
 const Avatar = styled.div`
@@ -70,6 +75,27 @@ const IconWrap = styled.div`
   cursor: pointer;
 `;
 
+const OptionsWrapper = styled.div`
+  position: absolute;
+  top: 40px;
+  right: 16px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  padding: 8px 0;
+  min-width: 160px;
+`;
+
+const OptionItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f5f8fa;
+  }
+`;
+
 const PostCard: React.FC<PostCardProps> = ({
   userName,
   userId,
@@ -78,8 +104,30 @@ const PostCard: React.FC<PostCardProps> = ({
   replyCount,
   retweetCount = 0,
   isLiked = false,
-  avatarUrl,
+  isOwnPost = false,
+  onDelete,
+  onReport,
 }) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
+  const [retweeted, setRetweeted] = useState(false);
+
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (optionsRef.current && !optionsRef.current.contains(e.target as Node)) {
+        setShowOptions(false);
+      }
+    };
+    if (showOptions) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showOptions]);
+
   return (
     <Card>
       <Avatar />
@@ -88,13 +136,37 @@ const PostCard: React.FC<PostCardProps> = ({
           <UserInfo>
             {userName} <span>{userId}</span>
           </UserInfo>
-          <FaEllipsisH />
+          <div onClick={(e) => { e.stopPropagation(); setShowOptions((prev) => !prev); }}>
+            <FaEllipsisH style={{ cursor: 'pointer' }} />
+          </div>
+          {showOptions && (
+            <OptionsWrapper ref={optionsRef} onClick={(e) => e.stopPropagation()}>
+              {isOwnPost ? (
+                <>
+                  <OptionItem onClick={onDelete}>削除</OptionItem>
+                  <OptionItem>プロフィールに固定</OptionItem>
+                  <OptionItem>返信可能ユーザーを変更</OptionItem>
+                </>
+              ) : (
+                <OptionItem onClick={onReport}>この投稿を通報</OptionItem>
+              )}
+            </OptionsWrapper>
+          )}
         </Header>
         <PostText>{content}</PostText>
         <ActionRow>
-          <IconWrap><FaReply /> {replyCount}</IconWrap>
-          <IconWrap><FaRetweet /> {retweetCount}</IconWrap>
-          <IconWrap><FaHeart color={isLiked ? 'red' : undefined} /> {favoriteCount}</IconWrap>
+          <IconWrap onClick={(e) => e.stopPropagation()}>
+            <FaRegCommentDots />
+            {replyCount}
+          </IconWrap>
+          <IconWrap onClick={(e) => { e.stopPropagation(); setRetweeted(!retweeted); }}>
+            <FaRetweet color={retweeted ? 'green' : undefined} />
+            {retweetCount}
+          </IconWrap>
+          <IconWrap onClick={(e) => { e.stopPropagation(); setLiked(!liked); }}>
+            {liked ? <FaHeart color="red" /> : <FaRegHeart />}
+            {favoriteCount}
+          </IconWrap>
         </ActionRow>
       </ContentWrapper>
     </Card>

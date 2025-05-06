@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import PostCard from './components/PostCard'; // ✅ 追加
+import PostCard from './components/PostCard';
+import PostForm from './components/PostForm';
 
 const LoadingMessage = styled.p`
   font-size: 20px;
   color: #666;
-`;
-
-const PostForm = styled.div`
-  margin: 20px 0;
-  textarea {
-    width: 100%;
-    height: 60px;
-    margin-bottom: 10px;
-  }
 `;
 
 const SuccessMessage = styled.div`
@@ -70,7 +62,6 @@ const TimeLine: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [timelines, setTimelines] = useState<Timeline[]>([]);
-  const [newContent, setNewContent] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
@@ -110,7 +101,7 @@ const TimeLine: React.FC = () => {
     }
   };
 
-  const handlePost = async () => {
+  const handlePost = async (newContent: string) => {
     if (!newContent.trim()) {
       setSuccessMessage('投稿内容を入力してください');
       return;
@@ -131,7 +122,6 @@ const TimeLine: React.FC = () => {
       if (response.ok) {
         const newTimeline = await response.json();
         setTimelines((prev) => [newTimeline, ...prev]);
-        setNewContent('');
         setSuccessMessage('投稿が作成されました');
       } else {
         setSuccessMessage('投稿に失敗しました');
@@ -213,17 +203,11 @@ const TimeLine: React.FC = () => {
     <>
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
 
-      <PostForm>
-        <textarea
-          value={newContent}
-          onChange={(e) => setNewContent(e.target.value)}
-          placeholder="新しい投稿を書く..."
-        />
-        <div style={{ fontSize: '12px', color: newContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
-          {newContent.length} / {MAX_CONTENT_LENGTH}
-        </div>
-        <button onClick={handlePost}>投稿する</button>
-      </PostForm>
+      <PostForm
+        onSubmit={handlePost}
+        placeholder="新しい投稿を書く..."
+        submitLabel="投稿する"
+      />
 
       {timelines.map((timeline) => (
         <div key={timeline.id} onClick={() => navigate(`/timelines/${timeline.id}`)} style={{ cursor: 'pointer' }}>
@@ -234,6 +218,8 @@ const TimeLine: React.FC = () => {
             favoriteCount={timeline.favorites_count}
             replyCount={timeline.total_replies_count}
             isLiked={timeline.is_liked}
+            postId={timeline.id}
+            isOwnPost={timeline.user.id === currentUserId}
           />
         </div>
       ))}

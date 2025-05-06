@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import PostCard from './components/PostCard';
+import PostForm from './components/PostForm';
 
 interface Timeline {
   id: number;
@@ -9,18 +11,11 @@ interface Timeline {
   parent_id?: number;
   replies?: Timeline[];
   is_deleted?: boolean;
+  total_replies_count?: number;
+  is_liked: boolean;
 }
 
 const MAX_CONTENT_LENGTH = 140;
-
-// 🔽 XSS対策：HTMLエスケープ関数
-const escapeHTML = (str: string) => {
-  return str.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-};
 
 const TimelineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,12 +26,6 @@ const TimelineDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupTarget, setPopupTarget] = useState<Timeline | null>(null);
-  const [popupContent, setPopupContent] = useState('');
-
-  const [confirmTargetId, setConfirmTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -87,59 +76,35 @@ const TimelineDetail: React.FC = () => {
     }
   };
 
-  const handlePopupSubmit = async () => {
-    if (!popupTarget || !popupContent.trim() || popupContent.length > MAX_CONTENT_LENGTH) return;
-    try {
-      const response = await fetch('http://localhost:3000/api/timelines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ content: popupContent, parent_id: popupTarget.id }),
-      });
-      if (!response.ok) throw new Error();
-      setPopupContent('');
-      setShowPopup(false);
-      await fetchTimeline();
-    } catch {
-      setError('リプライの投稿に失敗しました');
-    }
-  };
-
   const handleDelete = async (targetId: number) => {
     try {
       const response = await fetch(`http://localhost:3000/api/timelines/${targetId}`, {
         method: 'DELETE',
-        credentials: 'include',
+        credentials: 'include'
       });
       if (!response.ok) throw new Error();
-      setConfirmTargetId(null);
-      await fetchTimeline();
+      navigate('/timelines');
     } catch {
       setError('削除に失敗しました');
     }
   };
 
-  const renderReplies = (replies: Timeline[], rootUserId: number, level = 1): JSX.Element[] => {
-    return replies.flatMap((reply) => {
-      const isRootUser = reply.user.id === rootUserId;
-      if (level === 1 || (level === 2 && isRootUser)) {
-        return [
-          <div key={reply.id} style={{ marginLeft: level * 20, borderLeft: '2px solid #ccc', paddingLeft: 10, cursor: 'pointer' }} onClick={() => navigate(`/timelines/${reply.id}`)}>
-            <div><strong>{reply.user.name}</strong>（{reply.user.beebits_name}）</div>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(reply.content)}</div>
-            <div>いいね数: {reply.favorites_count}</div>
-            <button onClick={(e) => { e.stopPropagation(); setPopupTarget(reply); setShowPopup(true); }}>リプライ</button>
-            {currentUserId === reply.user.id && (
-              <button style={{ marginLeft: '10px' }} onClick={(e) => { e.stopPropagation(); setConfirmTargetId(reply.id); }}>
-                削除
-              </button>
-            )}
-            {reply.replies && renderReplies(reply.replies, rootUserId, level + 1)}
-          </div>,
-        ];
-      }
-      return [];
-    });
+  const renderReplies = (replies: Timeline[]) => {
+    return replies.map((reply) => (
+      <div key={reply.id} style={{ marginTop: 20 }}>
+        <PostCard
+          userName={reply.user.name}
+          userId={reply.user.beebits_name}
+          content={reply.content}
+          favoriteCount={reply.favorites_count}
+          replyCount={reply.total_replies_count ?? 0}
+          isLiked={reply.is_liked}
+          postId={reply.id}
+          isOwnPost={reply.user.id === currentUserId}
+          onDelete={handleDelete}
+        />
+      </div>
+    ));
   };
 
   if (loading) return <div>読み込み中...</div>;
@@ -153,83 +118,38 @@ const TimelineDetail: React.FC = () => {
       </button>
 
       <h2>投稿詳細</h2>
-      <div><strong>{timeline.user.name}</strong>（{timeline.user.beebits_name}）</div>
-      <div style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(timeline.content)}</div>
-      <div>いいね数: {timeline.favorites_count}</div>
-
-      {currentUserId === timeline.user.id && (
-        <button style={{ marginTop: 10 }} onClick={() => setConfirmTargetId(timeline.id)}>
-          削除
-        </button>
-      )}
+      <PostCard
+        userName={timeline.user.name}
+        userId={timeline.user.beebits_name}
+        content={timeline.content}
+        favoriteCount={timeline.favorites_count}
+        replyCount={timeline.total_replies_count ?? 0}
+        isLiked={timeline.is_liked}
+        postId={timeline.id}
+        isOwnPost={timeline.user.id === currentUserId}
+        onDelete={handleDelete}
+      />
 
       <div style={{ marginTop: 30 }}>
         <h3>リプライを投稿</h3>
-        <textarea value={replyContent} onChange={(e) => setReplyContent(e.target.value)} rows={4} style={{ width: '100%', marginBottom: 10 }} />
-        <div style={{ fontSize: '12px', color: replyContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
-          {replyContent.length} / {MAX_CONTENT_LENGTH}
-        </div>
-        {replyContent.length > MAX_CONTENT_LENGTH && (
-          <div style={{ color: 'red', fontSize: '14px' }}>
-            140文字以内で入力してください。
-          </div>
-        )}
-        <button onClick={handleReplySubmit} disabled={submitting || replyContent.length > MAX_CONTENT_LENGTH || !replyContent.trim()}>
-          {submitting ? '投稿中...' : 'リプライする'}
-        </button>
+        <PostForm
+          onSubmit={handleReplySubmit}
+          value={replyContent}
+          onChange={setReplyContent}
+          submitLabel="リプライする"
+          placeholder="リプライを入力..."
+          disabled={submitting}
+        />
       </div>
 
       <div style={{ marginTop: 40 }}>
-        <h3>リプライ</h3>
-        {timeline.replies && timeline.replies.length > 0
-          ? renderReplies(timeline.replies, timeline.user.id)
-          : <div>リプライはありません。</div>}
+        <h3>リプライ一覧</h3>
+        {timeline.replies && timeline.replies.length > 0 ? (
+          renderReplies(timeline.replies)
+        ) : (
+          <div>リプライはありません。</div>
+        )}
       </div>
-
-      {showPopup && popupTarget && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, width: 400 }}>
-            <h4>リプライ対象：</h4>
-            <p><strong>{popupTarget.user.name}</strong>（{popupTarget.user.beebits_name}）</p>
-            <p style={{ whiteSpace: 'pre-wrap' }}>{escapeHTML(popupTarget.content)}</p>
-            <textarea value={popupContent} onChange={(e) => setPopupContent(e.target.value)} rows={4} style={{ width: '100%', marginBottom: 10 }} />
-            <div style={{ fontSize: '12px', color: popupContent.length > MAX_CONTENT_LENGTH ? 'red' : '#666' }}>
-              {popupContent.length} / {MAX_CONTENT_LENGTH}
-            </div>
-            {popupContent.length > MAX_CONTENT_LENGTH && (
-              <div style={{ color: 'red', fontSize: '14px' }}>
-                140文字以内で入力してください。
-              </div>
-            )}
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowPopup(false)} style={{ marginRight: 10 }}>キャンセル</button>
-              <button onClick={handlePopupSubmit} disabled={popupContent.length > MAX_CONTENT_LENGTH || !popupContent.trim()}>
-                リプライする
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {confirmTargetId !== null && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex',
-          alignItems: 'center', justifyContent: 'center', zIndex: 2000
-        }}>
-          <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, width: 350 }}>
-            <p>この投稿を削除してもよろしいですか？</p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setConfirmTargetId(null)} style={{ marginRight: 10 }}>キャンセル</button>
-              <button onClick={() => handleDelete(confirmTargetId)}>削除する</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
