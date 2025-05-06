@@ -26,7 +26,7 @@ module Api
       end
     end
 
-    # タイムラインの削除（論理削除対応）
+    # タイムラインの削除（物理削除のみ）
     def destroy
       timeline = Timeline.find(params[:id])
       if timeline.user != current_user
@@ -34,11 +34,7 @@ module Api
         return
       end
 
-      if timeline.replies.any?
-        timeline.update(is_deleted: true)
-      else
-        timeline.destroy
-      end
+      timeline.destroy
 
       render json: { message: '投稿が削除されました' }, status: :ok
     end
@@ -55,19 +51,17 @@ module Api
           user: { only: %i[id name beebits_name] },
           favorites: { only: %i[id user_id] }
         },
-        methods: [:favorites_count, :total_replies_count] # ← 追加済
-      ).map { |t| format_deleted(t) }
+        methods: [:favorites_count, :total_replies_count]
+      )
     end
 
     def serialize_timeline(timeline)
-      format_deleted(
-        timeline.as_json(
-          include: {
-            user: { only: %i[id name beebits_name] },
-            favorites: { only: %i[id user_id] }
-          },
-          methods: [:favorites_count]
-        )
+      timeline.as_json(
+        include: {
+          user: { only: %i[id name beebits_name] },
+          favorites: { only: %i[id user_id] }
+        },
+        methods: [:favorites_count]
       )
     end
 
@@ -77,13 +71,6 @@ module Api
         serialize_with_replies(reply)
       end
       serialized
-    end
-
-    def format_deleted(timeline_hash)
-      if timeline_hash['is_deleted']
-        timeline_hash['content'] = '（投稿が削除されました）'
-      end
-      timeline_hash
     end
   end
 end

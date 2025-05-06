@@ -50,7 +50,7 @@ const PopupMenu: React.FC<PopupMenuProps> = ({ isOwnPost, onClose, onDelete }) =
         <>
           <MenuItem>プロフィールに固定</MenuItem>
           <MenuItem>返信できるユーザーを変更</MenuItem>
-          <MenuItem onClick={onDelete}>投稿を削除</MenuItem>
+          {onDelete && <MenuItem onClick={onDelete}>投稿を削除</MenuItem>}
         </>
       ) : (
         <MenuItem>この投稿を通報</MenuItem>

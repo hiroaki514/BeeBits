@@ -16,6 +16,7 @@ interface PostCardProps {
   postId: number;
   isOwnPost: boolean;
   onDelete?: (postId: number) => void;
+  onNavigate?: () => void;
 }
 
 const Card = styled.div`
@@ -25,6 +26,7 @@ const Card = styled.div`
   display: flex;
   gap: 12px;
   position: relative;
+  cursor: pointer;
 `;
 
 const Avatar = styled.div`
@@ -63,6 +65,7 @@ const PostText = styled.div`
 
 const MenuWrapper = styled.div`
   position: relative;
+  z-index: 10;
 `;
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -77,6 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({
   postId,
   isOwnPost,
   onDelete,
+  onNavigate,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -92,15 +96,19 @@ const PostCard: React.FC<PostCardProps> = ({
     }
   };
 
+  const handleCardClick = () => {
+    if (onNavigate) onNavigate();
+  };
+
   return (
-    <Card>
+    <Card onClick={handleCardClick}>
       <Avatar />
       <ContentWrapper>
         <Header>
           <UserInfo>
             {userName} <span>{userId}</span>
           </UserInfo>
-          <MenuWrapper>
+          <MenuWrapper onClick={(e) => e.stopPropagation()}>
             <FaEllipsisH style={{ cursor: 'pointer' }} onClick={handleMenuToggle} />
             {menuOpen && (
               <PopupMenu

@@ -53,7 +53,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <p>{message}</p>
         <ButtonRow>
           <button onClick={onCancel}>{cancelText}</button>
-          <button onClick={onConfirm}>{confirmText}</button>
+          <button
+            onClick={() => {
+              console.log('✅ 削除ボタンがクリックされました');
+              onConfirm();
+            }}
+          >
+            {confirmText}
+          </button>
         </ButtonRow>
       </ModalBox>
     </Overlay>
