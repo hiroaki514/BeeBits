@@ -17,7 +17,7 @@ const MenuColumnWrapper = styled.div`
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
-    flex: 0 0 60px; /* ✅ 狭幅用に調整 */
+    flex: 0 0 60px;
   }
 `;
 
@@ -33,8 +33,6 @@ const InfoColumnWrapper = styled.div`
   flex: 0 0 20%;
   padding: 10px;
   box-sizing: border-box;
-  overflow-y: auto;
-  max-height: 100vh;
 
   @media (max-width: 1024px) {
     display: none;
